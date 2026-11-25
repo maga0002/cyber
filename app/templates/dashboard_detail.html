@@ -50,13 +50,13 @@
 <div class="kaart hoofdgrafiek">
   <h2>Verdeling op {{ hoofd.kolom }}</h2>
   <div class="grafiek-groot">
-    <canvas data-grafiek='{{ {"type": "doughnut", "labels": hoofd.labels, "waarden": hoofd.waarden}|tojson|forceescape }}'
+    <canvas data-grafiek='{{ {"type": "doughnut", "labels": hoofd.labels, "waarden": hoofd.waarden, "sleutels": hoofd.get("sleutels")}|tojson|forceescape }}'
             data-filter-url="{{ url_for('main.dashboard_detail', ds_id=ds.id, groep=groep, f_kolom=hoofd.kolom) }}"></canvas>
   </div>
   <table class="tabel compact">
     <tbody>
     {% for l in hoofd.labels %}
-      <tr><td><a href="{{ url_for('main.dashboard_detail', ds_id=ds.id, groep=groep, f_kolom=hoofd.kolom, f_waarde=l) }}">{{ l }}</a></td>
+      <tr><td><a href="{{ url_for('main.dashboard_detail', ds_id=ds.id, groep=groep, f_kolom=hoofd.kolom, f_waarde=(hoofd.sleutels[loop.index0] if hoofd.get("sleutels") else l)) }}">{{ l }}</a></td>
           <td class="getal">{{ hoofd.waarden[loop.index0] }}</td>
           <td class="getal klein">{{ ((hoofd.waarden[loop.index0] / analyse.aantal_rijen) * 100)|round(0)|int }}%</td></tr>
     {% endfor %}
@@ -70,7 +70,7 @@
   <div class="kaart">
     <h3>{{ c.kolom }}</h3>
     <div class="grafiek-klein">
-      <canvas data-grafiek='{{ {"type": "bar", "labels": c.labels, "waarden": c.waarden}|tojson|forceescape }}'
+      <canvas data-grafiek='{{ {"type": "bar", "labels": c.labels, "waarden": c.waarden, "sleutels": c.get("sleutels"), "tijd": c.get("datum", false)}|tojson|forceescape }}'
               data-filter-url="{{ url_for('main.dashboard_detail', ds_id=ds.id, groep=groep, f_kolom=c.kolom) }}"></canvas>
     </div>
   </div>

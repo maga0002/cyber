@@ -1,0 +1,43 @@
+Systeem;Kwetsbaarheid;Ernst;Status;Eigenaar;CVSS;Ontdekt op
+Fileserver;Standaardwachtwoord beheerinterface;Kritiek;Opgelost;ICT Beheer;9.5;2026-10-14
+Mailserver;Ontbrekende HTTP-beveiligingsheaders;Laag;Opgelost;ICT Beheer;3.0;2026-07-12
+Mailserver;Kwetsbare plugin in CMS;Kritiek;In behandeling;ICT Beheer;9.7;2026-07-06
+HR-systeem;Logging uitgeschakeld;Middel;Opgelost;Applicatiebeheer;5.5;2026-11-18
+Telefonieplatform;Certificaat bijna verlopen;Laag;In behandeling;Netwerkbeheer;3.8;2026-11-11
+Werkplekken (Windows);Zwakke wachtwoordpolicy lokaal account;Middel;Risico geaccepteerd;Werkplekbeheer;6.4;2026-07-13
+Printserver;Standaardwachtwoord beheerinterface;Kritiek;Risico geaccepteerd;Werkplekbeheer;9.1;2026-10-27
+Telefonieplatform;Verouderde Java-runtime;Hoog;In behandeling;Netwerkbeheer;7.6;2026-09-17
+Telefonieplatform;Certificaat bijna verlopen;Laag;Opgelost;Netwerkbeheer;1.5;2026-10-05
+VPN-gateway;Onnodig open poort;Middel;Opgelost;Netwerkbeheer;4.4;2026-08-23
+Werkplekken (Windows);Verouderde webserversoftware;Hoog;Risico geaccepteerd;Werkplekbeheer;8.6;2026-11-20
+Printserver;SMBv1 ingeschakeld;Hoog;Risico geaccepteerd;Werkplekbeheer;8.5;2026-08-23
+Intranet;Standaardwachtwoord beheerinterface;Kritiek;Opgelost;Communicatie;9.2;2026-11-15
+Intranet;Standaardwachtwoord beheerinterface;Kritiek;Open;Communicatie;9.7;2026-07-14
+Telefonieplatform;Kwetsbare plugin in CMS;Kritiek;Opgelost;Netwerkbeheer;9.1;2026-08-19
+VPN-gateway;Verouderde webserversoftware;Hoog;Opgelost;Netwerkbeheer;7.2;2026-09-20
+Firewall;SMBv1 ingeschakeld;Hoog;Open;Netwerkbeheer;7.7;2026-11-04
+Back-upserver;Onnodig open poort;Middel;Opgelost;ICT Beheer;5.4;2026-08-25
+Financieel pakket;Ontbrekende beveiligingsupdate besturingssysteem;Hoog;Opgelost;Applicatiebeheer;8.6;2026-09-20
+Printserver;SMBv1 ingeschakeld;Hoog;Risico geaccepteerd;Werkplekbeheer;7.2;2026-08-26
+Webportaal klanten;SMBv1 ingeschakeld;Hoog;Opgelost;Applicatiebeheer;8.4;2026-09-16
+Fileserver;Standaardwachtwoord beheerinterface;Kritiek;In behandeling;ICT Beheer;9.6;2026-07-16
+Firewall;Logging uitgeschakeld;Middel;Opgelost;Netwerkbeheer;5.2;2026-07-19
+HR-systeem;Verouderde webserversoftware;Hoog;Opgelost;Applicatiebeheer;8.6;2026-09-27
+Firewall;Ontbrekende HTTP-beveiligingsheaders;Laag;In behandeling;Netwerkbeheer;1.6;2026-08-17
+Financieel pakket;Logging uitgeschakeld;Middel;Opgelost;Applicatiebeheer;5.3;2026-10-21
+Firewall;Ontbrekende beveiligingsupdate besturingssysteem;Hoog;In behandeling;Netwerkbeheer;7.5;2026-08-01
+Intranet;Kwetsbare plugin in CMS;Kritiek;In behandeling;Communicatie;10.0;2026-08-30
+Intranet;Ontbrekende beveiligingsupdate besturingssysteem;Hoog;In behandeling;Communicatie;7.9;2026-06-28
+Werkplekken (Windows);Verouderde Java-runtime;Hoog;Open;Werkplekbeheer;8.3;2026-08-30
+Firewall;Ontbrekende beveiligingsupdate besturingssysteem;Hoog;Opgelost;Netwerkbeheer;8.7;2026-07-19
+Printserver;Kwetsbare plugin in CMS;Kritiek;Opgelost;Werkplekbeheer;9.2;2026-07-13
+Firewall;Kwetsbare plugin in CMS;Kritiek;In behandeling;Netwerkbeheer;9.7;2026-08-12
+Mailserver;Onnodig open poort;Middel;Opgelost;ICT Beheer;4.4;2026-09-19
+Back-upserver;Kwetsbare plugin in CMS;Kritiek;Opgelost;ICT Beheer;9.9;2026-07-24
+Financieel pakket;Ontbrekende HTTP-beveiligingsheaders;Laag;Open;Applicatiebeheer;2.8;2026-09-27
+Printserver;Onnodig open poort;Middel;In behandeling;Werkplekbeheer;6.3;2026-09-30
+Intranet;Onnodig open poort;Middel;Opgelost;Communicatie;4.2;2026-08-20
+Telefonieplatform;Verouderde webserversoftware;Hoog;Opgelost;Netwerkbeheer;8.9;2026-11-20
+HR-systeem;Ontbrekende HTTP-beveiligingsheaders;Laag;Risico geaccepteerd;Applicatiebeheer;1.6;2026-07-27
+Printserver;Standaardwachtwoord beheerinterface;Kritiek;Opgelost;Werkplekbeheer;9.6;2026-11-01
+Telefonieplatform;Zwakke wachtwoordpolicy lokaal account;Middel;Opgelost;Netwerkbeheer;4.4;2026-07-02

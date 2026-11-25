@@ -34,7 +34,12 @@
     {% else %}
       <div class="kaart leeg">
         <p>Er zijn nog geen berichten.</p>
-        {% if current_user.is_authenticated %}<a class="knop" href="{{ url_for('main.nieuws_nieuw') }}">Plaats het eerste bericht</a>{% endif %}
+        {% if current_user.is_authenticated %}
+          <div class="acties" style="justify-content:center">
+            <a class="knop primair" href="{{ url_for('main.nieuws_nieuw') }}">Plaats het eerste bericht</a>
+            <a class="knop" href="{{ url_for('main.beheer') }}">Of laad voorbeelddata</a>
+          </div>
+        {% endif %}
       </div>
     {% endfor %}
   </div>

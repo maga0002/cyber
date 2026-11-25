@@ -112,6 +112,15 @@ def _registreer_filters(app: Flask):
 
 
 def _registreer_cli(app: Flask):
+    @app.cli.command("voorbeelddata")
+    def voorbeelddata():
+        """Vul een lege omgeving met fictieve voorbeelddata."""
+        from . import demo
+        if not demo.is_leeg():
+            raise click.ClickException("Er staat al inhoud in de database; voorbeelddata wordt niet geladen.")
+        r = demo.laad_voorbeelddata(User.query.first())
+        click.echo(f"Voorbeelddata geladen ({r['nieuws']} berichten, {r['dashboards']} dashboards, NIST-beoordeling).")
+
     @app.cli.command("create-admin")
     @click.argument("username")
     @click.password_option()

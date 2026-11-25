@@ -19,6 +19,10 @@
     {% if item.hoofd %}
       <div class="mini-grafiek"><canvas data-grafiek='{{ {"type": "doughnut", "labels": item.hoofd.labels, "waarden": item.hoofd.waarden, "mini": true}|tojson|forceescape }}'></canvas></div>
       <p class="klein">Verdeling op <strong>{{ item.hoofd.kolom }}</strong></p>
+      <p class="mini-legenda klein" data-legenda='{{ item.hoofd.labels[:6]|tojson|forceescape }}'>
+        {% for l in item.hoofd.labels[:6] %}<span><i></i>{{ l }} <b>{{ item.hoofd.waarden[loop.index0] }}</b></span>{% endfor %}
+        {% if item.hoofd.labels|length > 6 %}<span>+{{ item.hoofd.labels|length - 6 }} meer</span>{% endif %}
+      </p>
     {% elif item.ds.description %}
       <p>{{ item.ds.description }}</p>
     {% endif %}

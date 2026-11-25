@@ -1,0 +1,177 @@
+Medewerker;Afdeling;Campagne;Resultaat;Training gevolgd
+MW-001;Financiën;Q3 – Pakketbezorging;Geklikt;Ja
+MW-002;Financiën;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-003;Financiën;Q3 – Pakketbezorging;Geklikt;Ja
+MW-004;Financiën;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-005;Financiën;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-006;Financiën;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-007;Financiën;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-008;Financiën;Q3 – Pakketbezorging;Gemeld;Nee
+MW-009;Financiën;Q3 – Pakketbezorging;Geklikt;Nee
+MW-010;Financiën;Q3 – Pakketbezorging;Gemeld;Nee
+MW-011;Financiën;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-012;Financiën;Q3 – Pakketbezorging;Gemeld;Ja
+MW-013;HR;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-014;HR;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-015;HR;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-016;HR;Q3 – Pakketbezorging;Gemeld;Ja
+MW-017;HR;Q3 – Pakketbezorging;Gemeld;Ja
+MW-018;HR;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-019;HR;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-020;HR;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-021;ICT;Q3 – Pakketbezorging;Gemeld;Ja
+MW-022;ICT;Q3 – Pakketbezorging;Gemeld;Ja
+MW-023;ICT;Q3 – Pakketbezorging;Gemeld;Ja
+MW-024;ICT;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-025;ICT;Q3 – Pakketbezorging;Gemeld;Nee
+MW-026;ICT;Q3 – Pakketbezorging;Gemeld;Ja
+MW-027;ICT;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-028;ICT;Q3 – Pakketbezorging;Gemeld;Ja
+MW-029;ICT;Q3 – Pakketbezorging;Gemeld;Ja
+MW-030;ICT;Q3 – Pakketbezorging;Geklikt;Nee
+MW-031;ICT;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-032;ICT;Q3 – Pakketbezorging;Gemeld;Ja
+MW-033;ICT;Q3 – Pakketbezorging;Gemeld;Ja
+MW-034;ICT;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-035;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-036;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-037;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-038;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-039;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-040;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-041;Klantcontact;Q3 – Pakketbezorging;Gemeld;Ja
+MW-042;Klantcontact;Q3 – Pakketbezorging;Gemeld;Ja
+MW-043;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-044;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-045;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-046;Klantcontact;Q3 – Pakketbezorging;Gemeld;Ja
+MW-047;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-048;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-049;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-050;Klantcontact;Q3 – Pakketbezorging;Gemeld;Nee
+MW-051;Klantcontact;Q3 – Pakketbezorging;Geklikt;Nee
+MW-052;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-053;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-054;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-055;Klantcontact;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-056;Klantcontact;Q3 – Pakketbezorging;Gemeld;Ja
+MW-057;Inkoop;Q3 – Pakketbezorging;Geklikt;Nee
+MW-058;Inkoop;Q3 – Pakketbezorging;Gemeld;Ja
+MW-059;Inkoop;Q3 – Pakketbezorging;Geklikt;Ja
+MW-060;Inkoop;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-061;Inkoop;Q3 – Pakketbezorging;Geklikt;Nee
+MW-062;Inkoop;Q3 – Pakketbezorging;Gemeld;Nee
+MW-063;Inkoop;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-064;Inkoop;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-065;Juridisch;Q3 – Pakketbezorging;Gemeld;Ja
+MW-066;Juridisch;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-067;Juridisch;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-068;Juridisch;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-069;Juridisch;Q3 – Pakketbezorging;Gemeld;Ja
+MW-070;Juridisch;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-071;Juridisch;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-072;Juridisch;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-073;Communicatie;Q3 – Pakketbezorging;Genegeerd;Nee
+MW-074;Communicatie;Q3 – Pakketbezorging;Gemeld;Ja
+MW-075;Communicatie;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-076;Communicatie;Q3 – Pakketbezorging;Gemeld;Ja
+MW-077;Communicatie;Q3 – Pakketbezorging;Geklikt;Nee
+MW-078;Communicatie;Q3 – Pakketbezorging;Geklikt;Ja
+MW-079;Communicatie;Q3 – Pakketbezorging;Gemeld;Nee
+MW-080;Communicatie;Q3 – Pakketbezorging;Geklikt;Ja
+MW-081;Directie;Q3 – Pakketbezorging;Gemeld;Ja
+MW-082;Directie;Q3 – Pakketbezorging;Gemeld;Ja
+MW-083;Directie;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-084;Directie;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-085;Directie;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-086;Directie;Q3 – Pakketbezorging;Gemeld;Ja
+MW-087;Directie;Q3 – Pakketbezorging;Genegeerd;Ja
+MW-088;Directie;Q3 – Pakketbezorging;Gemeld;Ja
+MW-089;Financiën;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-090;Financiën;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-091;Financiën;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-092;Financiën;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-093;Financiën;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-094;Financiën;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-095;Financiën;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-096;Financiën;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-097;Financiën;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-098;Financiën;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-099;Financiën;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-100;Financiën;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-101;HR;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-102;HR;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-103;HR;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-104;HR;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-105;HR;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-106;HR;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-107;HR;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-108;HR;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-109;ICT;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-110;ICT;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-111;ICT;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-112;ICT;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-113;ICT;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-114;ICT;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-115;ICT;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-116;ICT;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-117;ICT;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-118;ICT;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-119;ICT;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-120;ICT;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-121;ICT;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-122;ICT;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-123;Klantcontact;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-124;Klantcontact;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-125;Klantcontact;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-126;Klantcontact;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-127;Klantcontact;Q4 – Wachtwoord verlopen;Geklikt;Ja
+MW-128;Klantcontact;Q4 – Wachtwoord verlopen;Geklikt;Ja
+MW-129;Klantcontact;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-130;Klantcontact;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-131;Klantcontact;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-132;Klantcontact;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-133;Klantcontact;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-134;Klantcontact;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-135;Klantcontact;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-136;Klantcontact;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-137;Klantcontact;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-138;Klantcontact;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-139;Klantcontact;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-140;Klantcontact;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-141;Klantcontact;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-142;Klantcontact;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-143;Klantcontact;Q4 – Wachtwoord verlopen;Geklikt;Nee
+MW-144;Klantcontact;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-145;Inkoop;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-146;Inkoop;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-147;Inkoop;Q4 – Wachtwoord verlopen;Geklikt;Nee
+MW-148;Inkoop;Q4 – Wachtwoord verlopen;Geklikt;Ja
+MW-149;Inkoop;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-150;Inkoop;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-151;Inkoop;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-152;Inkoop;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-153;Juridisch;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-154;Juridisch;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-155;Juridisch;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-156;Juridisch;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-157;Juridisch;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-158;Juridisch;Q4 – Wachtwoord verlopen;Geklikt;Ja
+MW-159;Juridisch;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-160;Juridisch;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-161;Communicatie;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-162;Communicatie;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-163;Communicatie;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-164;Communicatie;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-165;Communicatie;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-166;Communicatie;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-167;Communicatie;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-168;Communicatie;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-169;Directie;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-170;Directie;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-171;Directie;Q4 – Wachtwoord verlopen;Genegeerd;Nee
+MW-172;Directie;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-173;Directie;Q4 – Wachtwoord verlopen;Gemeld;Ja
+MW-174;Directie;Q4 – Wachtwoord verlopen;Gemeld;Nee
+MW-175;Directie;Q4 – Wachtwoord verlopen;Genegeerd;Ja
+MW-176;Directie;Q4 – Wachtwoord verlopen;Genegeerd;Ja

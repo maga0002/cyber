@@ -117,3 +117,12 @@ def test_terugval_naar_sqlite(tmp_path, monkeypatch):
     monkeypatch.setenv("DATABASE_URL", "postgresql://x:y@127.0.0.1:1/bestaatniet")
     uri, soort = kies_database_uri(str(tmp_path))
     assert soort == "sqlite" and uri.startswith("sqlite:///")
+
+
+def test_ordinale_schaal_en_datumkolom():
+    from app.importer import analyseer
+    rijen = [{"Ernst": e, "Datum": d} for e, d in
+             [("Laag", "2026-02-01"), ("Kritiek", "2026-01-05"), ("Hoog", "2026-01-20"), ("Laag", "2026-02-03"), ("Middel", "2026-03-01")]]
+    a = {c["kolom"]: c for c in analyseer(["Ernst", "Datum"], rijen)["categorisch"]}
+    assert a["Ernst"]["labels"] == ["Kritiek", "Hoog", "Middel", "Laag"]
+    assert a["Datum"]["sleutels"] == ["2026-01", "2026-02", "2026-03"] and a["Datum"]["waarden"] == [2, 2, 1]

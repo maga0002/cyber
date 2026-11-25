@@ -19,9 +19,10 @@
       {% if nist_zichtbaar %}<a href="{{ url_for('nist.overzicht') }}" class="{{ 'actief' if request.blueprint == 'nist' }}">NIST CSF</a>{% endif %}
       <a href="{{ url_for('main.dashboards') }}" class="{{ 'actief' if request.endpoint and 'dashboard' in request.endpoint }}">Dashboards</a>
       {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.beheer') }}" class="{{ 'actief' if request.endpoint == 'main.beheer' }}">Beheer</a>
         <form method="post" action="{{ url_for('main.logout') }}" class="inline">
           <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
-          <button class="linkknop" type="submit">Uitloggen ({{ current_user.username }})</button>
+          <button class="linkknop" type="submit" title="Ingelogd als {{ current_user.username }}">Uitloggen</button>
         </form>
       {% else %}
         <a href="{{ url_for('main.login') }}">Beheer</a>

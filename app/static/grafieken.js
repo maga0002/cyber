@@ -2,16 +2,24 @@
   // Herkenbare statuswaarden krijgen een vaste kleur (stoplicht).
   // Per groep meerdere tinten, zodat bijv. "Deels" en "Gepland" niet dezelfde kleur krijgen.
   const STATUS = [
-    { tinten: ["#1f9d55", "#4ec27f", "#137a40"], woorden: ["gereed", "voldoet", "groen", "ok", "afgerond", "ja", "compliant", "laag", "geïmplementeerd", "geimplementeerd", "done", "actief"] },
-    { tinten: ["#e3a008", "#f2c14e", "#b97d00", "#f59e0b"], woorden: ["deels", "gedeeltelijk", "in uitvoering", "oranje", "bezig", "midden", "middel", "gemiddeld", "partial", "in progress", "gepland"] },
-    { tinten: ["#d64545", "#ef7b7b", "#a92f2f"], woorden: ["open", "niet", "rood", "nee", "hoog", "kritiek", "non-compliant", "ontbreekt", "te laat", "achterstand"] },
+    { tinten: ["#1f9d55", "#4ec27f", "#137a40"], woorden: ["gereed", "voldoet", "groen", "ok", "afgerond", "compliant", "laag", "geïmplementeerd", "geimplementeerd", "done", "actief", "opgelost", "gemeld"] },
+    { tinten: ["#e3a008", "#f2c14e", "#b97d00", "#f59e0b"], woorden: ["deels", "gedeeltelijk", "in uitvoering", "oranje", "bezig", "midden", "middel", "gemiddeld", "partial", "in progress", "gepland", "in behandeling", "risico geaccepteerd", "genegeerd"] },
+    { tinten: ["#d64545", "#ef7b7b", "#a92f2f"], woorden: ["open", "niet", "rood", "hoog", "kritiek", "non-compliant", "ontbreekt", "te laat", "achterstand", "geklikt"] },
   ];
   const PALET = ["#2563eb", "#7c3aed", "#0891b2", "#db2777", "#65a30d", "#ea580c", "#4f46e5", "#0d9488", "#9333ea", "#ca8a04"];
+
+  const VAST = { kritiek: "#8f1d1d", critical: "#8f1d1d" };
+
+  function isStatus(label) {
+    const l = String(label).toLowerCase().trim();
+    return !!VAST[l] || STATUS.some((g) => g.woorden.some((w) => l === w || l.startsWith(w + " ") || l.startsWith(w + "-") || l.startsWith(w + " (")));
+  }
 
   function kleurenVoor(labels) {
     const gebruikt = STATUS.map(() => 0);
     return labels.map((label, i) => {
       const l = String(label).toLowerCase().trim();
+      if (VAST[l]) return VAST[l];
       const s = STATUS.findIndex((g) => g.woorden.some((w) => l === w || l.startsWith(w + " ") || l.startsWith(w + "-") || l.startsWith(w + " (")));
       if (s === -1) return PALET[i % PALET.length];
       const t = STATUS[s].tinten;
@@ -25,8 +33,14 @@
 
   document.querySelectorAll("canvas[data-grafiek]").forEach((canvas) => {
     const cfg = JSON.parse(canvas.dataset.grafiek);
-    const kleuren = kleurenVoor(cfg.labels);
+    // Tijdreeksen (datum per maand) in één kleur; anders status- of paletkleuren
+    // Balken zonder statuswaarden (systemen, afdelingen, maanden) in één kleur
+    const eenKleur = cfg.tijd || (cfg.type === "bar" && !cfg.labels.some(isStatus));
+    const kleuren = eenKleur ? cfg.labels.map(() => "#2563eb") : kleurenVoor(cfg.labels);
     const filterUrl = canvas.dataset.filterUrl;
+    // Lange labels: horizontale balken zijn beter leesbaar
+    const horizontaal = cfg.type === "bar" && !cfg.tijd && cfg.labels.some((l) => String(l).length > 14);
+    if (horizontaal) canvas.parentElement.style.height = Math.max(220, cfg.labels.length * 26 + 40) + "px";
     new Chart(canvas, {
       type: cfg.type,
       data: { labels: cfg.labels, datasets: [{ data: cfg.waarden, backgroundColor: kleuren, borderWidth: cfg.type === "doughnut" ? 2 : 0, borderColor: donker ? "#1e293b" : "#fff", borderRadius: cfg.type === "bar" ? 4 : 0 }] },
@@ -38,18 +52,30 @@
           legend: { display: cfg.type === "doughnut" && !cfg.mini, position: "right", labels: { color: tekstKleur, boxWidth: 12 } },
           tooltip: { enabled: true },
         },
-        scales: cfg.type === "bar" ? {
+        indexAxis: horizontaal ? "y" : "x",
+        scales: cfg.type === "bar" ? (horizontaal ? {
+          y: { ticks: { color: tekstKleur, autoSkip: false,
+                        callback: (v, i) => { const t = String(cfg.labels[i]); return t.length > 20 ? t.slice(0, 19) + "…" : t; } },
+               grid: { display: false } },
+          x: { beginAtZero: true, ticks: { color: tekstKleur, precision: 0 }, grid: { color: rasterKleur } },
+        } : {
           x: { ticks: { color: tekstKleur }, grid: { display: false } },
           y: { beginAtZero: true, ticks: { color: tekstKleur, precision: 0 }, grid: { color: rasterKleur } },
-        } : undefined,
+        }) : undefined,
         onClick: filterUrl ? (evt, items) => {
           if (!items.length) return;
-          const label = cfg.labels[items[0].index];
+          const label = (cfg.sleutels || cfg.labels)[items[0].index];
           window.location = filterUrl + "&f_waarde=" + encodeURIComponent(label);
         } : undefined,
         onHover: filterUrl ? (evt, items) => { evt.native.target.style.cursor = items.length ? "pointer" : "default"; } : undefined,
       },
     });
+  });
+
+  // Kleurbolletjes in de mini-legenda gelijk aan de grafiekkleuren
+  document.querySelectorAll("[data-legenda]").forEach((el) => {
+    const kleuren = kleurenVoor(JSON.parse(el.dataset.legenda));
+    el.querySelectorAll("i").forEach((i, n) => { i.style.background = kleuren[n]; });
   });
 
   // Eenvoudig zoeken in de gegevenstabel

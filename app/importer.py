@@ -1,12 +1,20 @@
 """Lijsten (CSV / Excel) inlezen en dashboard-statistieken berekenen."""
 import io
 import math
+import re
 from collections import Counter
 
 import pandas as pd
 
 TOEGESTANE_EXTENSIES = {".csv", ".txt", ".xlsx", ".xls"}
 MAX_CATEGORIEEN = 25
+DATUM_PATROON = re.compile(r"^(\d{4})-(\d{2})-\d{2}")
+# Bekende schalen worden in deze volgorde getoond in plaats van op aantal
+ORDINALE_SCHALEN = [
+    ["kritiek", "zeer hoog", "hoog", "middel", "gemiddeld", "midden", "laag", "zeer laag"],
+    ["critical", "high", "medium", "low"],
+]
+MAANDEN = ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"]
 
 
 class ImportFout(Exception):
@@ -87,15 +95,33 @@ def analyseer(columns: list[str], rijen: list[dict]) -> dict:
                 "max": max(waarden),
                 "aantal": len(waarden),
             })
+        elif all(DATUM_PATROON.match(str(v)) for v in waarden):
+            # Datumkolom: tellen per maand, in tijdsvolgorde
+            per_maand = Counter(str(v)[:7] for v in waarden)
+            if len(per_maand) <= 36:
+                maanden = sorted(per_maand)
+                categorisch.append({
+                    "kolom": kolom,
+                    "labels": [f"{MAANDEN[int(m[5:7]) - 1]} {m[:4]}" for m in maanden],
+                    "waarden": [per_maand[m] for m in maanden],
+                    "sleutels": maanden,  # filterwaarden, bijv. 2026-03
+                    "leeg": len(rijen) - len(waarden),
+                    "datum": True,
+                })
         else:
             telling = Counter(str(v) for v in waarden)
             # Kolommen waarin elke waarde uniek is (namen, ID's, datums) zijn geen categorie.
             alles_uniek = len(waarden) > 3 and len(telling) == len(waarden)
             if len(telling) <= MAX_CATEGORIEEN and not alles_uniek:
+                volgorde = telling.most_common()
+                for schaal in ORDINALE_SCHALEN:
+                    if all(k.lower() in schaal for k in telling):
+                        volgorde = sorted(volgorde, key=lambda kv: schaal.index(kv[0].lower()))
+                        break
                 categorisch.append({
                     "kolom": kolom,
-                    "labels": [k for k, _ in telling.most_common()],
-                    "waarden": [n for _, n in telling.most_common()],
+                    "labels": [k for k, _ in volgorde],
+                    "waarden": [n for _, n in volgorde],
                     "leeg": len(rijen) - len(waarden),
                 })
     return {"aantal_rijen": len(rijen), "numeriek": numeriek, "categorisch": categorisch}
@@ -103,8 +129,10 @@ def analyseer(columns: list[str], rijen: list[dict]) -> dict:
 
 def kies_standaard_groepkolom(analyse: dict) -> str | None:
     """Voorkeur voor een kolom die naar status/score klinkt, anders de eerste categorische."""
-    voorkeur = ("status", "score", "niveau", "risico", "prioriteit", "categorie")
-    for cat in analyse["categorisch"]:
-        if any(w in cat["kolom"].lower() for w in voorkeur):
-            return cat["kolom"]
-    return analyse["categorisch"][0]["kolom"] if analyse["categorisch"] else None
+    voorkeur = ("status", "resultaat", "ernst", "score", "niveau", "risico", "impact", "prioriteit", "categorie")
+    kandidaten = [c for c in analyse["categorisch"] if not c.get("datum")]
+    for woord in voorkeur:
+        for cat in kandidaten:
+            if woord in cat["kolom"].lower():
+                return cat["kolom"]
+    return kandidaten[0]["kolom"] if kandidaten else None

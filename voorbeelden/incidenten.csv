@@ -1,0 +1,29 @@
+Datum;Type incident;Impact;Status;Gemeld bij AP;Doorlooptijd (uren)
+2026-01-12;Phishing;Laag;Afgerond;Nee;8
+2026-01-23;Phishing;Hoog;Afgerond;Nee;27
+2026-01-28;Malware;Laag;Afgerond;Nee;3
+2026-03-20;Datalek (verkeerde ontvanger);Middel;Afgerond;Ja;22
+2026-03-31;Phishing;Hoog;Afgerond;Nee;36
+2026-04-02;Phishing;Laag;Afgerond;Nee;3
+2026-04-29;Verloren/gestolen laptop;Laag;Afgerond;Nee;8
+2026-05-19;Phishing;Laag;Afgerond;Nee;12
+2026-06-16;Malware;Laag;Afgerond;Nee;6
+2026-06-17;Datalek (verkeerde ontvanger);Laag;Afgerond;Nee;5
+2026-06-23;Phishing;Laag;Afgerond;Nee;6
+2026-06-27;Datalek (verkeerde ontvanger);Laag;Afgerond;Nee;6
+2026-07-02;Phishing;Laag;Afgerond;Nee;3
+2026-07-24;Malware;Laag;Afgerond;Nee;5
+2026-07-28;Account gecompromitteerd;Laag;Afgerond;Nee;3
+2026-07-30;Phishing;Laag;Afgerond;Nee;2
+2026-08-27;Ongeautoriseerde toegang;Laag;Afgerond;Nee;4
+2026-09-05;Ongeautoriseerde toegang;Laag;Afgerond;Nee;10
+2026-09-18;Account gecompromitteerd;Laag;Afgerond;Nee;1
+2026-09-18;Datalek (verkeerde ontvanger);Middel;Afgerond;Ja;72
+2026-09-18;Malware;Laag;Afgerond;Nee;9
+2026-09-21;Account gecompromitteerd;Laag;Afgerond;Nee;6
+2026-09-25;Phishing;Laag;Afgerond;Nee;10
+2026-09-28;Account gecompromitteerd;Hoog;Afgerond;Nee;70
+2026-10-21;Phishing;Middel;Afgerond;Nee;8
+2026-11-08;DDoS;Middel;Afgerond;Nee;7
+2026-11-12;Account gecompromitteerd;Laag;Afgerond;Nee;3
+2026-11-15;Datalek (verkeerde ontvanger);Laag;In behandeling;Nee;9

@@ -20,6 +20,14 @@ Bezoekers kunnen alles lezen; alleen ingelogde beheerders kunnen plaatsen, impor
 
 De eerste start duurt een paar minuten (pakketten installeren); daarna start de app binnen enkele seconden. Je gegevens staan in de map `instance/` naast de code.
 
+## Voorbeelddata
+
+Wil je eerst rondkijken? Log in, ga naar **Beheer** en klik op **Voorbeelddata laden**. De app wordt dan gevuld met fictieve gegevens: 5 nieuwsberichten, 4 dashboards (maatregelen, kwetsbaarheden, phishingsimulaties, incidenten), een volledige NIST CSF-beoordeling met toelichtingen, acties, bewijsstukken en een trend over drie kwartalen. Op dezelfde pagina kun je alle inhoud weer wissen (accounts blijven bestaan).
+
+Via de terminal kan het ook: `flask --app run voorbeelddata`.
+
+De losse bestanden staan in `voorbeelden/`, zodat je ze ook zelf kunt importeren of als sjabloon voor je eigen lijsten kunt gebruiken.
+
 ## Starten in GitHub Codespaces
 
 1. Ga op GitHub naar de repository → groene knop **Code** → tabblad **Codespaces** → **Create codespace**.

@@ -1,3 +1,5 @@
+import re
+
 from flask import (Blueprint, abort, current_app, flash, redirect, render_template,
                    request, url_for)
 from flask_login import current_user, login_required, login_user, logout_user
@@ -199,7 +201,10 @@ def dashboard_detail(ds_id):
     f_waarde = request.args.get("f_waarde")
     rijen = alle_rijen
     if f_kolom in ds.columns and f_waarde is not None:
-        rijen = [r for r in alle_rijen if str(r.get(f_kolom)) == f_waarde]
+        if re.fullmatch(r"\d{4}-\d{2}", f_waarde):  # maand uit een datumkolom
+            rijen = [r for r in alle_rijen if str(r.get(f_kolom) or "").startswith(f_waarde)]
+        else:
+            rijen = [r for r in alle_rijen if str(r.get(f_kolom)) == f_waarde]
 
     analyse = analyseer(ds.columns, rijen)
     groep = request.args.get("groep") or ds.group_column
@@ -255,3 +260,37 @@ def _zet_rijen(ds: Dataset, kolommen: list[str], rijen: list[dict]):
     ds.columns = kolommen
     ds.rows = [DatasetRow(position=i, data=r) for i, r in enumerate(rijen)]
     ds.group_column = kies_standaard_groepkolom(analyseer(kolommen, rijen))
+
+
+# ---------------------------------------------------------------- beheer
+
+@bp.route("/beheer")
+@login_required
+def beheer():
+    from . import demo
+    return render_template("beheer.html", leeg=demo.is_leeg())
+
+
+@bp.route("/beheer/voorbeelddata", methods=["POST"])
+@login_required
+def voorbeelddata():
+    from . import demo
+    if not demo.is_leeg():
+        flash("Voorbeelddata kan alleen in een lege omgeving worden geladen. Wis eerst de inhoud.", "fout")
+        return redirect(url_for("main.beheer"))
+    r = demo.laad_voorbeelddata(current_user)
+    flash(f"Voorbeelddata geladen: {r['nieuws']} nieuwsberichten, {r['dashboards']} dashboards, "
+          f"een volledige NIST-beoordeling met acties, {r['bewijs']} bewijsstukken en een trend.", "ok")
+    return redirect(url_for("main.index"))
+
+
+@bp.route("/beheer/wissen", methods=["POST"])
+@login_required
+def inhoud_wissen():
+    from . import demo
+    if request.form.get("bevestiging", "").strip().upper() != "WISSEN":
+        flash("Typ WISSEN om te bevestigen.", "fout")
+        return redirect(url_for("main.beheer"))
+    demo.wis_inhoud()
+    flash("Alle inhoud is gewist. Gebruikersaccounts zijn behouden.", "ok")
+    return redirect(url_for("main.beheer"))

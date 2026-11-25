@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Beheer · {{ app_naam }}{% endblock %}
+{% block content %}
+<h1>Beheer</h1>
+<p class="sub">Ingelogd als <strong>{{ current_user.username }}</strong> · database: {{ db_type }}</p>
+
+<div class="raster" style="margin-top:1.25rem">
+  <div class="kaart">
+    <h2>Voorbeelddata</h2>
+    <p>Vult de app met fictieve gegevens om alles uit te proberen:</p>
+    <ul class="klein">
+      <li>5 nieuwsberichten</li>
+      <li>4 dashboards: maatregelen, kwetsbaarheden, phishingsimulaties en incidenten</li>
+      <li>een volledige NIST CSF-beoordeling met toelichtingen, 10 acties en 8 bewijsstukken (links)</li>
+      <li>3 momentopnames, zodat de trend zichtbaar is</li>
+    </ul>
+    {% if leeg %}
+      <form method="post" action="{{ url_for('main.voorbeelddata') }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <button class="knop primair" type="submit">Voorbeelddata laden</button>
+      </form>
+    {% else %}
+      <p class="klein">Er staat al inhoud in de app. Voorbeelddata kan alleen in een lege omgeving worden geladen; wis eerst de inhoud.</p>
+    {% endif %}
+    <p class="klein">De losse bestanden staan ook in de map <code>voorbeelden/</code>, om zelf te importeren.</p>
+  </div>
+
+  <div class="kaart">
+    <h2>Alle inhoud wissen</h2>
+    <p>Verwijdert alle nieuwsberichten, dashboards, NIST-scores, toelichtingen, acties, bewijsstukken en momentopnames. Gebruikersaccounts blijven bestaan. <strong>Dit kan niet ongedaan worden gemaakt.</strong></p>
+    <form method="post" action="{{ url_for('main.inhoud_wissen') }}" class="rij-form" onsubmit="return confirm('Weet je het zeker? Alle inhoud wordt verwijderd.')">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <input name="bevestiging" placeholder="Typ WISSEN" autocomplete="off" required>
+      <button class="knop gevaar" type="submit">Wissen</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

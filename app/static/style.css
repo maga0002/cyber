@@ -305,3 +305,7 @@ fieldset.keuze legend { font-weight: 600; padding: 0 .4rem; }
 .of { display: flex; align-items: center; gap: .75rem; color: var(--zacht); font-size: .85rem; }
 .of::before, .of::after { content: ""; flex: 1; border-top: 1px solid var(--rand); }
 .zonder-bewijs { display: flex; flex-wrap: wrap; gap: .35rem .75rem; }
+.mini-legenda { display: flex; flex-wrap: wrap; gap: .2rem .8rem; margin: .4rem 0 0; }
+.mini-legenda span { display: inline-flex; align-items: center; gap: .3rem; }
+.mini-legenda i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; background: var(--rand); }
+.mini-legenda b { color: var(--tekst); font-weight: 600; }
