@@ -9,6 +9,17 @@ Webapplicatie om de cyberweerbaarheid van de organisatie te monitoren en te comm
 
 Bezoekers kunnen alles lezen; alleen ingelogde beheerders kunnen plaatsen, importeren, bewerken en verwijderen.
 
+## Snel starten op je eigen computer
+
+1. Installeer **Python 3.11 of nieuwer** via https://www.python.org/downloads/ (Windows: vink *Add python.exe to PATH* aan).
+2. Download de code: op GitHub **Code → Download ZIP** en pak het bestand uit (of `git clone`).
+3. Start de app:
+   - **Windows:** dubbelklik op `start.bat`
+   - **macOS / Linux:** open een terminal in de map en voer `./start.sh` uit
+4. De browser opent http://127.0.0.1:5000. De eerste keer maak je het beheerdersaccount aan.
+
+De eerste start duurt een paar minuten (pakketten installeren); daarna start de app binnen enkele seconden. Je gegevens staan in de map `instance/` naast de code.
+
 ## Starten in GitHub Codespaces
 
 1. Ga op GitHub naar de repository → groene knop **Code** → tabblad **Codespaces** → **Create codespace**.
