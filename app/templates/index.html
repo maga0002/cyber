@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Actueel</h1>
+    <p class="sub">Nieuws, waarschuwingen en updates over onze cyberweerbaarheid.</p>
+  </div>
+  {% if current_user.is_authenticated %}
+    <a class="knop primair" href="{{ url_for('main.nieuws_nieuw') }}">+ Nieuw bericht</a>
+  {% endif %}
+</section>
+
+<div class="kolommen">
+  <div class="hoofdkolom">
+    <div class="chips">
+      <a class="chip {{ 'actief' if not actieve_categorie }}" href="{{ url_for('main.index') }}">Alles</a>
+      {% for c in categorieen %}
+        <a class="chip {{ 'actief' if actieve_categorie == c }}" href="{{ url_for('main.index', categorie=c) }}">{{ c }}</a>
+      {% endfor %}
+    </div>
+
+    {% for post in berichten %}
+      <article class="kaart bericht {{ 'vastgezet' if post.pinned }}">
+        <div class="meta">
+          <span class="label cat-{{ post.category|lower }}">{{ post.category }}</span>
+          {% if post.pinned %}<span class="label">Vastgezet</span>{% endif %}
+          {% if not post.published %}<span class="label concept">Concept</span>{% endif %}
+          <span class="datum">{{ post.created_at|datum }}</span>
+        </div>
+        <h2><a href="{{ url_for('main.nieuws_detail', post_id=post.id) }}">{{ post.title }}</a></h2>
+        <div class="tekst ingekort">{{ post.body|alinea }}</div>
+        <a class="lees" href="{{ url_for('main.nieuws_detail', post_id=post.id) }}">Lees verder →</a>
+      </article>
+    {% else %}
+      <div class="kaart leeg">
+        <p>Er zijn nog geen berichten.</p>
+        {% if current_user.is_authenticated %}<a class="knop" href="{{ url_for('main.nieuws_nieuw') }}">Plaats het eerste bericht</a>{% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <aside class="zijkolom">
+    <div class="kaart">
+      <h3>Dashboards</h3>
+      {% if datasets %}
+        <ul class="lijst">
+        {% for ds in datasets %}
+          <li><a href="{{ url_for('main.dashboard_detail', ds_id=ds.id) }}">{{ ds.name }}</a>
+              <span class="klein">{{ ds.rows|length }} regels · {{ ds.updated_at|datum }}</span></li>
+        {% endfor %}
+        </ul>
+      {% else %}
+        <p class="klein">Nog geen dashboards.</p>
+      {% endif %}
+      <a class="lees" href="{{ url_for('main.dashboards') }}">Alle dashboards →</a>
+    </div>
+  </aside>
+</div>
+{% endblock %}

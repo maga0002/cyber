@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Lijst importeren</h1>
+<form method="post" enctype="multipart/form-data" class="kaart formulier">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label>Bestand (CSV of Excel)
+    <input type="file" name="bestand" accept=".csv,.txt,.xlsx,.xls" required>
+    <span class="hint">De eerste regel moet de kolomnamen bevatten. Scheidingsteken (komma, puntkomma of tab) wordt automatisch herkend.</span>
+  </label>
+  <label>Naam van het dashboard
+    <input name="name" placeholder="Bijv. Maatregelen BIO Q4" maxlength="200">
+    <span class="hint">Leeg laten = bestandsnaam.</span>
+  </label>
+  <label>Omschrijving
+    <textarea name="description" rows="3"></textarea>
+  </label>
+  <div class="acties">
+    <button class="knop primair" type="submit">Importeren</button>
+    <a class="knop" href="{{ url_for('main.dashboards') }}">Annuleren</a>
+  </div>
+</form>
+
+<div class="kaart uitleg">
+  <h3>Hoe wordt het dashboard opgebouwd?</h3>
+  <ul>
+    <li><strong>Kolommen met tekst</strong> (bijv. <em>Status</em>, <em>Eigenaar</em>, <em>Prioriteit</em>) worden geteld en als grafiek getoond.</li>
+    <li><strong>Kolommen met getallen</strong> (bijv. <em>Score</em>, <em>Kosten</em>) worden samengevat met gemiddelde, minimum en maximum.</li>
+    <li>Statuswaarden als <em>Gereed / Voldoet / Groen</em>, <em>Deels / In uitvoering / Oranje</em> en <em>Open / Niet / Rood</em> krijgen automatisch passende kleuren.</li>
+    <li>Wil je de lijst later bijwerken? Gebruik <em>Bewerken → nieuw bestand</em> op het dashboard; de link blijft hetzelfde.</li>
+  </ul>
+</div>
+{% endblock %}

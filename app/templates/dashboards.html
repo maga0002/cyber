@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Dashboards · {{ app_naam }}{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Dashboards</h1>
+    <p class="sub">Overzichten op basis van geïmporteerde lijsten.</p>
+  </div>
+  {% if current_user.is_authenticated %}
+    <a class="knop primair" href="{{ url_for('main.dashboard_importeren') }}">+ Lijst importeren</a>
+  {% endif %}
+</section>
+
+<div class="raster">
+{% for item in overzicht %}
+  <a class="kaart dashkaart" href="{{ url_for('main.dashboard_detail', ds_id=item.ds.id) }}">
+    <h2>{{ item.ds.name }}</h2>
+    <p class="klein">{{ item.analyse.aantal_rijen }} regels · bijgewerkt {{ item.ds.updated_at|datum }}</p>
+    {% if item.hoofd %}
+      <div class="mini-grafiek"><canvas data-grafiek='{{ {"type": "doughnut", "labels": item.hoofd.labels, "waarden": item.hoofd.waarden, "mini": true}|tojson|forceescape }}'></canvas></div>
+      <p class="klein">Verdeling op <strong>{{ item.hoofd.kolom }}</strong></p>
+    {% elif item.ds.description %}
+      <p>{{ item.ds.description }}</p>
+    {% endif %}
+  </a>
+{% else %}
+  <div class="kaart leeg">
+    <p>Er zijn nog geen dashboards.</p>
+    {% if current_user.is_authenticated %}
+      <a class="knop" href="{{ url_for('main.dashboard_importeren') }}">Importeer een lijst</a>
+    {% else %}
+      <p class="klein">Een beheerder kan lijsten importeren.</p>
+    {% endif %}
+  </div>
+{% endfor %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='chart.umd.js') }}"></script>
+<script src="{{ url_for('static', filename='grafieken.js') }}"></script>
+{% endblock %}

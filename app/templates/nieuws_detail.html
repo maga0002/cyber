@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} · {{ app_naam }}{% endblock %}
+{% block content %}
+<a class="terug" href="{{ url_for('main.index') }}">← Terug naar nieuws</a>
+<article class="kaart bericht los">
+  <div class="meta">
+    <span class="label cat-{{ post.category|lower }}">{{ post.category }}</span>
+    {% if not post.published %}<span class="label concept">Concept</span>{% endif %}
+    <span class="datum">{{ post.created_at|datum }}{% if post.author %} · {{ post.author.username }}{% endif %}</span>
+  </div>
+  <h1>{{ post.title }}</h1>
+  <div class="tekst">{{ post.body|alinea }}</div>
+
+  {% if current_user.is_authenticated %}
+  <div class="acties">
+    <a class="knop" href="{{ url_for('main.nieuws_bewerken', post_id=post.id) }}">Bewerken</a>
+    <form method="post" action="{{ url_for('main.nieuws_verwijderen', post_id=post.id) }}" onsubmit="return confirm('Dit bericht verwijderen?')">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <button class="knop gevaar" type="submit">Verwijderen</button>
+    </form>
+  </div>
+  {% endif %}
+</article>
+{% endblock %}

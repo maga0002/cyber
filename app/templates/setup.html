@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="post" class="kaart formulier smal">
+  <h1>Eerste installatie</h1>
+  <p class="sub">Maak het beheerdersaccount aan. Hiermee plaats je nieuws en importeer je lijsten.</p>
+  <p class="klein">Database: <strong>{{ db_type }}</strong></p>
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label>Gebruikersnaam <input name="username" required autofocus autocomplete="username"></label>
+  <label>Wachtwoord (min. 8 tekens) <input name="password" type="password" required minlength="8" autocomplete="new-password"></label>
+  <label>Herhaal wachtwoord <input name="password2" type="password" required minlength="8" autocomplete="new-password"></label>
+  <button class="knop primair" type="submit">Account aanmaken</button>
+</form>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<a class="terug" href="{{ url_for('main.dashboard_detail', ds_id=ds.id) }}">← Terug naar dashboard</a>
+<h1>Dashboard bewerken</h1>
+<form method="post" enctype="multipart/form-data" class="kaart formulier">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label>Naam <input name="name" value="{{ ds.name }}" required maxlength="200"></label>
+  <label>Omschrijving <textarea name="description" rows="3">{{ ds.description or '' }}</textarea></label>
+  <label>Standaardkolom voor de hoofdgrafiek
+    <select name="group_column">
+      <option value="">(geen)</option>
+      {% for c in analyse.categorisch %}<option {{ 'selected' if c.kolom == ds.group_column }}>{{ c.kolom }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Gegevens vervangen door nieuw bestand (optioneel)
+    <input type="file" name="bestand" accept=".csv,.txt,.xlsx,.xls">
+    <span class="hint">Huidige bron: {{ ds.source_filename }} ({{ ds.rows|length }} regels). Een nieuw bestand vervangt alle regels.</span>
+  </label>
+  <div class="acties">
+    <button class="knop primair" type="submit">Opslaan</button>
+    <a class="knop" href="{{ url_for('main.dashboard_detail', ds_id=ds.id) }}">Annuleren</a>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ 'Bericht bewerken' if post.id else 'Nieuw bericht' }}</h1>
+<form method="post" class="kaart formulier">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label>Titel
+    <input name="title" value="{{ post.title or '' }}" required maxlength="200">
+  </label>
+  <label>Categorie
+    <select name="category">
+      {% for c in categorieen %}<option {{ 'selected' if post.category == c }}>{{ c }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Tekst
+    <textarea name="body" rows="12" required>{{ post.body or '' }}</textarea>
+    <span class="hint">Laat een lege regel tussen alinea's.</span>
+  </label>
+  <label class="vinkje"><input type="checkbox" name="published" {{ 'checked' if post.published }}> Gepubliceerd (zichtbaar voor bezoekers)</label>
+  <label class="vinkje"><input type="checkbox" name="pinned" {{ 'checked' if post.pinned }}> Bovenaan vastzetten</label>
+  <div class="acties">
+    <button class="knop primair" type="submit">Opslaan</button>
+    <a class="knop" href="{{ url_for('main.nieuws_detail', post_id=post.id) if post.id else url_for('main.index') }}">Annuleren</a>
+  </div>
+</form>
+{% endblock %}

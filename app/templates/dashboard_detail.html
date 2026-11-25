@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}{{ ds.name }} · {{ app_naam }}{% endblock %}
+{% block content %}
+<a class="terug" href="{{ url_for('main.dashboards') }}">← Alle dashboards</a>
+<section class="hero">
+  <div>
+    <h1>{{ ds.name }}</h1>
+    {% if ds.description %}<p class="sub">{{ ds.description }}</p>{% endif %}
+    <p class="klein">Bron: {{ ds.source_filename }} · bijgewerkt {{ ds.updated_at|datum }}</p>
+  </div>
+  {% if current_user.is_authenticated %}
+  <div class="acties">
+    <a class="knop" href="{{ url_for('main.dashboard_bewerken', ds_id=ds.id) }}">Bewerken / bijwerken</a>
+    <form method="post" action="{{ url_for('main.dashboard_verwijderen', ds_id=ds.id) }}" onsubmit="return confirm('Dit dashboard en alle gegevens verwijderen?')">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <button class="knop gevaar" type="submit">Verwijderen</button>
+    </form>
+  </div>
+  {% endif %}
+</section>
+
+{% if f_kolom and f_waarde is not none %}
+  <div class="melding info">Gefilterd op <strong>{{ f_kolom }} = {{ f_waarde }}</strong> ({{ rijen|length }} van {{ totaal }} regels).
+    <a href="{{ url_for('main.dashboard_detail', ds_id=ds.id, groep=groep) }}">Filter wissen</a></div>
+{% endif %}
+
+<div class="kpis">
+  <div class="kpi"><span class="kpi-waarde">{{ analyse.aantal_rijen }}</span><span class="kpi-label">Regels</span></div>
+  {% for n in analyse.numeriek[:5] %}
+    <div class="kpi" title="min {{ n.min }} · max {{ n.max }} · totaal {{ n.som }}">
+      <span class="kpi-waarde">{{ n.gemiddelde }}</span>
+      <span class="kpi-label">Gem. {{ n.kolom }}</span>
+      <span class="kpi-sub">min {{ n.min }} · max {{ n.max }}</span>
+    </div>
+  {% endfor %}
+</div>
+
+{% if analyse.categorisch %}
+<form method="get" class="groepkeuze">
+  {% if f_kolom %}<input type="hidden" name="f_kolom" value="{{ f_kolom }}"><input type="hidden" name="f_waarde" value="{{ f_waarde }}">{% endif %}
+  <label>Hoofdgrafiek op kolom
+    <select name="groep" onchange="this.form.submit()">
+      {% for c in analyse.categorisch %}<option {{ 'selected' if c.kolom == groep }}>{{ c.kolom }}</option>{% endfor %}
+    </select>
+  </label>
+</form>
+{% endif %}
+
+{% if hoofd %}
+<div class="kaart hoofdgrafiek">
+  <h2>Verdeling op {{ hoofd.kolom }}</h2>
+  <div class="grafiek-groot">
+    <canvas data-grafiek='{{ {"type": "doughnut", "labels": hoofd.labels, "waarden": hoofd.waarden}|tojson|forceescape }}'
+            data-filter-url="{{ url_for('main.dashboard_detail', ds_id=ds.id, groep=groep, f_kolom=hoofd.kolom) }}"></canvas>
+  </div>
+  <table class="tabel compact">
+    <tbody>
+    {% for l in hoofd.labels %}
+      <tr><td><a href="{{ url_for('main.dashboard_detail', ds_id=ds.id, groep=groep, f_kolom=hoofd.kolom, f_waarde=l) }}">{{ l }}</a></td>
+          <td class="getal">{{ hoofd.waarden[loop.index0] }}</td>
+          <td class="getal klein">{{ ((hoofd.waarden[loop.index0] / analyse.aantal_rijen) * 100)|round(0)|int }}%</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+<div class="raster">
+{% for c in analyse.categorisch if c.kolom != groep %}
+  <div class="kaart">
+    <h3>{{ c.kolom }}</h3>
+    <div class="grafiek-klein">
+      <canvas data-grafiek='{{ {"type": "bar", "labels": c.labels, "waarden": c.waarden}|tojson|forceescape }}'
+              data-filter-url="{{ url_for('main.dashboard_detail', ds_id=ds.id, groep=groep, f_kolom=c.kolom) }}"></canvas>
+    </div>
+  </div>
+{% endfor %}
+</div>
+
+<div class="kaart">
+  <div class="tabelkop">
+    <h2>Gegevens</h2>
+    <input type="search" id="zoek" placeholder="Zoeken in tabel…">
+  </div>
+  <div class="tabel-scroll">
+    <table class="tabel" id="gegevens">
+      <thead><tr>{% for k in ds.columns %}<th data-kolom="{{ loop.index0 }}">{{ k }}</th>{% endfor %}</tr></thead>
+      <tbody>
+      {% for r in rijen %}
+        <tr>{% for k in ds.columns %}<td>{{ r.get(k) if r.get(k) is not none else '' }}</td>{% endfor %}</tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='chart.umd.js') }}"></script>
+<script src="{{ url_for('static', filename='grafieken.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,13 @@
+Maatregel;Domein;Status;Eigenaar;Prioriteit;Score;Deadline
+MFA voor alle accounts;Toegangsbeheer;Gereed;IT Beheer;Hoog;5;2026-03-01
+Patchbeleid servers;Kwetsbaarheden;In uitvoering;IT Beheer;Hoog;3;2026-12-15
+Back-up offline kopie;Continuïteit;Gereed;IT Beheer;Hoog;4;2026-06-01
+Phishing-awareness training;Bewustwording;In uitvoering;HR;Middel;3;2027-01-31
+Incident response plan;Incidentbeheer;Open;CISO;Hoog;1;2026-12-31
+Logging en monitoring (SIEM);Detectie;Deels;Security Team;Hoog;2;2027-03-01
+Leveranciersbeoordeling;Ketenbeheer;Open;Inkoop;Middel;1;2027-02-15
+Encryptie laptops;Databeveiliging;Gereed;IT Beheer;Middel;5;2026-02-01
+Wachtwoordbeleid;Toegangsbeheer;Gereed;CISO;Laag;4;2026-01-15
+Netwerksegmentatie;Netwerk;Deels;IT Beheer;Hoog;2;2027-04-01
+Pentest externe systemen;Kwetsbaarheden;Gepland;Security Team;Middel;2;2027-01-10
+Crisisoefening;Continuïteit;Open;Directie;Middel;1;2027-05-01

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="post" class="kaart formulier smal">
+  <h1>Inloggen beheer</h1>
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label>Gebruikersnaam <input name="username" required autofocus autocomplete="username"></label>
+  <label>Wachtwoord <input name="password" type="password" required autocomplete="current-password"></label>
+  <label class="vinkje"><input type="checkbox" name="remember"> Ingelogd blijven</label>
+  <button class="knop primair" type="submit">Inloggen</button>
+</form>
+{% endblock %}
