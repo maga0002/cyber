@@ -9,6 +9,21 @@ Webapplicatie om de cyberweerbaarheid van de organisatie te monitoren en te comm
 
 Bezoekers kunnen alles lezen; alleen ingelogde beheerders kunnen plaatsen, importeren, bewerken en verwijderen.
 
+## Starten in GitHub Codespaces
+
+1. Ga op GitHub naar de repository → groene knop **Code** → tabblad **Codespaces** → **Create codespace**.
+2. Wacht tot de Codespace klaar is (de eerste keer een paar minuten). De afhankelijkheden worden automatisch geïnstalleerd en de app start vanzelf.
+3. De app opent in een nieuw browsertabblad. Gebeurt dat niet: open onderin het tabblad **Ports** en klik op het wereldbolletje bij poort **5000**.
+4. Maak bij het eerste bezoek het beheerdersaccount aan.
+
+Handmatig (opnieuw) starten in de terminal van de Codespace:
+
+```bash
+python run.py
+```
+
+Let op: de SQLite-database staat in de Codespace zelf (`instance/cyber.db`). Die blijft bewaard zolang de Codespace bestaat, maar verdwijnt als je de Codespace verwijdert. Gebruik voor blijvend gebruik een server met PostgreSQL (zie hieronder).
+
 ## Installeren
 
 ```bash
