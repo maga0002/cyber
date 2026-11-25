@@ -9,6 +9,7 @@
   </div>
   <div class="acties">
     <a class="knop" href="{{ url_for('nist.acties') }}">Acties</a>
+    {% if current_user.is_authenticated %}<a class="knop" href="{{ url_for('nist.bewijs_overzicht') }}">Bewijsstukken</a>{% endif %}
     <a class="knop" href="{{ url_for('nist.rapport') }}">Rapport</a>
     <a class="knop" href="{{ url_for('nist.export') }}">Excel-export</a>
     {% if current_user.is_authenticated %}<a class="knop primair" href="{{ url_for('nist.importeren') }}">Importeren</a>{% endif %}
@@ -35,6 +36,16 @@
     <span class="kpi-label">Acties over deadline</span>
   </div>
 </div>
+
+{% if bewijs %}
+<a class="kaart bewijsbalk" href="{{ url_for('nist.bewijs_overzicht') }}">
+  <div>
+    <strong>Onderbouwd met bewijs: {{ bewijs.met }} van {{ bewijs.totaal }} subcategorieën ({{ bewijs.procent }}%)</strong>
+    <span class="klein">{{ bewijs.stukken }} bewijsstuk(ken){% if bewijs.verlopen %} · <span class="tekst-rood">{{ bewijs.verlopen }} verlopen</span>{% endif %}</span>
+  </div>
+  <div class="voortgang"><div class="voortgang-vulling" style="width: {{ bewijs.procent }}%"></div></div>
+</a>
+{% endif %}
 
 <div class="nist-boven">
   <div class="kaart">

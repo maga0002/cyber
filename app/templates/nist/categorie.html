@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "nist/_macros.html" import scorebalk, actietabel, niveau_label with context %}
+{% from "nist/_macros.html" import scorebalk, actietabel, niveau_label, bewijslink with context %}
 {% block title %}{{ c.code }} {{ c.naam }} · NIST CSF{% endblock %}
 {% block content %}
 <a class="terug" href="{{ url_for('nist.functie', code=c.functie.code) }}">← {{ c.functie.code }} {{ c.functie.naam }}</a>
@@ -75,10 +75,24 @@
           {% if s.toelichting %}<div class="tekst klein-tekst">{{ s.toelichting|alinea }}</div>{% endif %}
         </div>
       {% endif %}
+      {% if current_user.is_authenticated and s.bewijzen %}
+        <ul class="bewijslijst">
+        {% for b in s.bewijzen %}
+          <li class="{{ 'is-verlopen' if b.verlopen }}">
+            {{ bewijslink(b) }}
+            {% if b.geldig_tot %}<span class="klein">· geldig tot {{ b.geldig_tot.strftime('%d-%m-%Y') }}</span>{% endif %}
+            {% if b.verlopen %}<span class="status st-te-laat">Verlopen</span>{% endif %}
+            <a class="klein" href="{{ url_for('nist.bewijs_bewerken', bewijs_id=b.id) }}">bewerken</a>
+          </li>
+        {% endfor %}
+        </ul>
+      {% endif %}
       <div class="subcat-voet">
         {% set n_open = s.acties|rejectattr('afgerond')|list|length %}
         <span class="klein">{% if s.beoordeeld_op %}Bijgewerkt {{ s.beoordeeld_op|datum }}{% endif %}{% if n_open %} · {{ n_open }} open actie(s){% endif %}</span>
-        {% if current_user.is_authenticated %}<a class="klein" href="{{ url_for('nist.actie_nieuw', sub=s.code) }}">+ actie</a>{% endif %}
+        {% if current_user.is_authenticated %}<span class="subcat-links">
+          <a class="klein" href="{{ url_for('nist.bewijs_nieuw', sub=s.code) }}">+ bewijsstuk</a>
+          <a class="klein" href="{{ url_for('nist.actie_nieuw', sub=s.code) }}">+ actie</a></span>{% endif %}
       </div>
     </div>
   {% endfor %}

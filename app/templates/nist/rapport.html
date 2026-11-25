@@ -99,6 +99,23 @@
   {% else %}<p class="klein">Geen subcategorieën onder het doel.</p>{% endif %}
 </section>
 
+{% if bewijs %}
+<section class="geen-breuk">
+  <h2>Onderbouwing met bewijsstukken</h2>
+  <p>{{ bewijs.met }} van de {{ bewijs.totaal }} van toepassing zijnde subcategorieën ({{ bewijs.procent }}%) zijn onderbouwd met in totaal {{ bewijs.stukken }} bewijsstuk(ken){% if bewijs.verlopen %}; <strong>{{ bewijs.verlopen }} daarvan moeten opnieuw worden beoordeeld</strong>{% endif %}.</p>
+  <table class="tabel compact vast">
+    <colgroup><col><col style="width:9rem"><col style="width:40%"></colgroup>
+    <thead><tr><th>Functie</th><th class="getal">Met bewijs</th><th></th></tr></thead>
+    <tbody>{% for f in ov.functies %}{% set pb = bewijs.per_functie.get(f.code, {'met': 0, 'totaal': 0}) %}
+      <tr><td><span class="fcode f-{{ f.code|lower }}">{{ f.code }}</span> {{ f.naam }}</td>
+          <td class="getal">{{ pb.met }}/{{ pb.totaal }}</td>
+          <td><div class="voortgang"><div class="voortgang-vulling" style="width: {{ (100 * pb.met / pb.totaal)|round|int if pb.totaal else 0 }}%"></div></div></td></tr>
+    {% endfor %}</tbody>
+  </table>
+  <p class="klein">Dit onderdeel is alleen zichtbaar voor beheerders.</p>
+</section>
+{% endif %}
+
 <section>
   <h2>5. Openstaande acties</h2>
   {% if open_acties %}

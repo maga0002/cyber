@@ -100,7 +100,8 @@ def test_momentopname_en_export(app, admin):
     assert r.status_code == 200
     import pandas as pd
     bladen = pd.read_excel(io.BytesIO(r.data), sheet_name=None)
-    assert set(bladen) == {"Samenvatting", "Categorieën", "Subcategorieën", "Acties"}
+    # beheerders krijgen ook het tabblad met bewijsstukken
+    assert set(bladen) == {"Samenvatting", "Categorieën", "Subcategorieën", "Acties", "Bewijsstukken"}
     assert len(bladen["Subcategorieën"]) == 106
 
 

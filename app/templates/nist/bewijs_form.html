@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Bewijsstuk · {{ s.code }}{% endblock %}
+{% block content %}
+<a class="terug" href="{{ url_for('nist.categorie', code=s.categorie.code) }}#{{ s.code }}">← {{ s.categorie.code }} {{ s.categorie.naam }}</a>
+<h1>{{ 'Bewijsstuk bewerken' if b.id else 'Bewijsstuk toevoegen' }}</h1>
+<p class="sub"><span class="code">{{ s.code }}</span> {{ s.omschrijving }}</p>
+
+<form method="post" enctype="multipart/form-data" class="kaart formulier" style="margin-top:1rem">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+
+  <fieldset class="keuze">
+    <legend>Bestand of link</legend>
+    {% if b.id %}
+      <p class="klein">Huidig:
+        {% if b.is_bestand %}<a href="{{ url_for('nist.bewijs_bestand', bewijs_id=b.id) }}" target="_blank" rel="noopener">{{ b.bestandsnaam }}</a> ({{ b.grootte_tekst }})
+        {% else %}<a href="{{ b.url }}" target="_blank" rel="noopener noreferrer">{{ b.url }}</a>{% endif %}
+        – vul hieronder alleen iets in om het te vervangen.</p>
+    {% endif %}
+    <label>Bestand uploaden
+      <input type="file" name="bestand" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.ods,.odp,.txt,.csv,.md,.png,.jpg,.jpeg,.gif,.webp,.msg,.eml,.zip">
+      <span class="hint">Bijv. beleidsdocument, rapport, screenshot of export. Max. 16 MB.</span>
+    </label>
+    <div class="of"><span>of</span></div>
+    <label>Link naar document
+      <input type="url" name="url" placeholder="https://intranet.example/beleid/toegangsbeleid.pdf" value="{{ '' if b.is_bestand else (b.url or '') }}">
+      <span class="hint">Handig voor documenten die in SharePoint, een DMS of wiki staan.</span>
+    </label>
+  </fieldset>
+
+  <label>Titel <input name="titel" value="{{ b.titel or '' }}" maxlength="200" placeholder="Leeg laten = bestandsnaam"></label>
+  <label>Omschrijving <textarea name="omschrijving" rows="3" placeholder="Wat toont dit bewijsstuk aan?">{{ b.omschrijving or '' }}</textarea></label>
+  <label>Opnieuw beoordelen vóór
+    <input type="date" name="geldig_tot" value="{{ b.geldig_tot.isoformat() if b.geldig_tot else '' }}">
+    <span class="hint">Optioneel. Na deze datum wordt het bewijsstuk als verlopen gemarkeerd.</span>
+  </label>
+  <div class="acties">
+    <button class="knop primair" type="submit">Opslaan</button>
+    <a class="knop" href="{{ url_for('nist.categorie', code=s.categorie.code) }}#{{ s.code }}">Annuleren</a>
+  </div>
+</form>
+
+{% if b.id %}
+<form method="post" action="{{ url_for('nist.bewijs_verwijderen', bewijs_id=b.id) }}" onsubmit="return confirm('Bewijsstuk definitief verwijderen?')">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <button class="knop gevaar" type="submit">Bewijsstuk verwijderen</button>
+</form>
+{% endif %}
+{% endblock %}

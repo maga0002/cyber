@@ -8,7 +8,7 @@ from sqlalchemy.orm import selectinload
 from . import nist_data
 from .database import db
 from .importer import ImportFout, lees_bestand
-from .models import NistActie, NistCategorie, NistFunctie, NistSubcategorie, nu
+from .models import NistActie, NistBewijs, NistCategorie, NistFunctie, NistSubcategorie, nu
 
 NIVEAU_NAMEN = {n: naam for n, naam, _ in nist_data.VOLWASSENHEID}
 
@@ -152,6 +152,26 @@ def categorie_grafiek(f, ov: dict) -> dict:
     }
 
 
+def bewijs_statistiek() -> dict:
+    """Hoeveel (van toepassing zijnde) subcategorieën zijn onderbouwd met bewijs, per functie."""
+    subs = (NistSubcategorie.query.filter(NistSubcategorie.nvt.is_(False))
+            .options(selectinload(NistSubcategorie.bewijzen)).all())
+    per_functie = {}
+    for s in subs:
+        f = per_functie.setdefault(s.code[:2], {"met": 0, "totaal": 0})
+        f["totaal"] += 1
+        f["met"] += 1 if s.bewijzen else 0
+    alle = NistBewijs.query.all()
+    met = sum(1 for s in subs if s.bewijzen)
+    return {
+        "met": met, "totaal": len(subs),
+        "procent": round(100 * met / len(subs)) if subs else 0,
+        "stukken": len(alle),
+        "verlopen": sum(1 for b in alle if b.verlopen),
+        "per_functie": per_functie,
+    }
+
+
 def momentopname_data(ov: dict) -> dict:
     return {
         "functies": {k: v["huidig"] for k, v in ov["per_functie"].items()},
@@ -292,7 +312,7 @@ def parse_datum(waarde) -> date | None:
 
 # ---------------------------------------------------------------- export
 
-def exporteer_excel() -> bytes:
+def exporteer_excel(met_bewijs: bool = False) -> bytes:
     ov = overzicht()
     functies = ov["functies"]
 
@@ -319,6 +339,7 @@ def exporteer_excel() -> bytes:
                              "Huidig": "n.v.t." if sc.nvt else sc.huidig,
                              "Doel": None if sc.nvt else sc.doel,
                              "Eigenaar": sc.eigenaar or "", "Toelichting": sc.toelichting or "",
+                             **({"Bewijsstukken": len(sc.bewijzen)} if met_bewijs else {}),
                              "Beoordeeld op": sc.beoordeeld_op.strftime("%Y-%m-%d") if sc.beoordeeld_op else ""})
 
     acties = [{"Code": (a.subcategorie.code if a.subcategorie else a.categorie.code), "Actie": a.titel,
@@ -327,10 +348,23 @@ def exporteer_excel() -> bytes:
                "Te laat": "ja" if a.te_laat else ""}
               for a in NistActie.query.order_by(NistActie.deadline).all()]
 
+    bladen = [("Samenvatting", samenvatting), ("Categorieën", categorieen),
+              ("Subcategorieën", subs), ("Acties", acties)]
+    if met_bewijs:
+        bewijzen = [{"Code": b.subcategorie.code, "Titel": b.titel, "Omschrijving": b.omschrijving or "",
+                     "Soort": "Bestand" if b.is_bestand else "Link",
+                     "Bestand / link": b.bestandsnaam if b.is_bestand else b.url,
+                     "Geldig tot": b.geldig_tot.isoformat() if b.geldig_tot else "",
+                     "Verlopen": "ja" if b.verlopen else "",
+                     "Toegevoegd door": b.toegevoegd_door or "",
+                     "Toegevoegd op": b.created_at.strftime("%Y-%m-%d") if b.created_at else ""}
+                    for b in NistBewijs.query.join(NistSubcategorie).join(NistCategorie)
+                    .order_by(NistCategorie.volgorde, NistSubcategorie.code).all()]
+        bladen.append(("Bewijsstukken", bewijzen))
+
     buf = io.BytesIO()
     with pd.ExcelWriter(buf, engine="openpyxl") as xl:
-        for naam, data in (("Samenvatting", samenvatting), ("Categorieën", categorieen),
-                           ("Subcategorieën", subs), ("Acties", acties)):
+        for naam, data in bladen:
             df = pd.DataFrame(data) if data else pd.DataFrame({"": []})
             df.to_excel(xl, sheet_name=naam, index=False)
             blad = xl.sheets[naam]

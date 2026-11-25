@@ -285,3 +285,23 @@ code { font-family: ui-monospace, monospace; font-size: .88em; background: var(-
 }
 .tabel.vast { table-layout: fixed; }
 .tabel.vast .wrap-cel { min-width: 0; }
+
+/* bewijsstukken */
+.bewijslijst { list-style: none; margin: .6rem 0 0; padding: .5rem .75rem; background: var(--bg); border-radius: 6px; display: flex; flex-direction: column; gap: .35rem; }
+.bewijslijst li { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; font-size: .92rem; }
+.bewijslijst li.is-verlopen .bewijs-link { color: var(--rood); }
+.bewijs-link { display: inline-flex; align-items: center; gap: .4rem; font-weight: 600; }
+.bewijs-icoon { font-size: .62rem; font-weight: 700; letter-spacing: .02em; background: var(--primair); color: #fff; border-radius: 3px; padding: .1rem .3rem; min-width: 2.4rem; text-align: center; }
+.bewijs-icoon.link { background: var(--zacht); }
+.subcat-links { display: flex; gap: 1rem; }
+.bewijsbalk { display: flex; align-items: center; gap: 1.5rem; color: var(--tekst); flex-wrap: wrap; }
+.bewijsbalk > div:first-child { display: flex; flex-direction: column; flex: 1; min-width: 240px; }
+.bewijsbalk:hover { text-decoration: none; border-color: var(--primair); }
+.voortgang { height: 10px; background: var(--rand); border-radius: 999px; overflow: hidden; flex: 0 1 320px; min-width: 120px; }
+.voortgang-vulling { height: 100%; background: var(--primair); border-radius: 999px; }
+.tekst-rood { color: var(--rood); font-weight: 600; }
+fieldset.keuze { border: 1px solid var(--rand); border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; gap: .75rem; margin: 0; }
+fieldset.keuze legend { font-weight: 600; padding: 0 .4rem; }
+.of { display: flex; align-items: center; gap: .75rem; color: var(--zacht); font-size: .85rem; }
+.of::before, .of::after { content: ""; flex: 1; border-top: 1px solid var(--rand); }
+.zonder-bewijs { display: flex; flex-wrap: wrap; gap: .35rem .75rem; }

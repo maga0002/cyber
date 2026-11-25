@@ -115,6 +115,8 @@ class NistSubcategorie(db.Model):
     eigenaar = db.Column(db.String(120), default="")
     beoordeeld_op = db.Column(db.DateTime(timezone=True))
     acties = db.relationship("NistActie", backref="subcategorie")
+    bewijzen = db.relationship("NistBewijs", backref="subcategorie", cascade="all, delete-orphan",
+                               order_by="NistBewijs.created_at.desc()")
 
 
 class NistActie(db.Model):
@@ -149,3 +151,36 @@ class NistMeting(db.Model):
     datum = db.Column(db.DateTime(timezone=True), default=nu)
     totaal = db.Column(db.Float)
     data = db.Column(db.JSON, nullable=False)  # {"functies": {"GV": 2.4, ...}, "categorieen": {...}}
+
+
+class NistBewijs(db.Model):
+    """Bewijsstuk bij een subcategorie: een geüpload bestand of een link."""
+    id = db.Column(db.Integer, primary_key=True)
+    subcategorie_id = db.Column(db.Integer, db.ForeignKey("nist_subcategorie.id"), nullable=False, index=True)
+    titel = db.Column(db.String(200), nullable=False)
+    omschrijving = db.Column(db.Text, default="")
+    url = db.Column(db.String(1000))              # bij een link
+    bestandsnaam = db.Column(db.String(255))      # originele naam bij een upload
+    mimetype = db.Column(db.String(120))
+    grootte = db.Column(db.Integer)
+    inhoud = db.deferred(db.Column(db.LargeBinary))  # alleen laden bij downloaden
+    geldig_tot = db.Column(db.Date)               # datum voor herbeoordeling
+    toegevoegd_door = db.Column(db.String(80))
+    created_at = db.Column(db.DateTime(timezone=True), default=nu)
+
+    @property
+    def is_bestand(self) -> bool:
+        return self.bestandsnaam is not None
+
+    @property
+    def verlopen(self) -> bool:
+        return bool(self.geldig_tot and self.geldig_tot < nu().date())
+
+    @property
+    def grootte_tekst(self) -> str:
+        n = self.grootte or 0
+        if n < 1024:
+            return f"{n} B"
+        if n < 1024 * 1024:
+            return f"{n / 1024:.0f} KB"
+        return f"{n / 1024 / 1024:.1f} MB"

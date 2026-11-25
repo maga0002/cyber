@@ -1,5 +1,8 @@
+import mimetypes
+import os
 from datetime import date
 from functools import wraps
+from urllib.parse import quote, urlparse
 
 from flask import (Blueprint, Response, abort, flash, redirect, render_template, request,
                    url_for)
@@ -8,7 +11,7 @@ from flask_login import current_user, login_required
 from . import nist
 from .database import db
 from .importer import ImportFout
-from .models import (Instelling, NistActie, NistCategorie, NistFunctie, NistMeting,
+from .models import (Instelling, NistActie, NistBewijs, NistCategorie, NistFunctie, NistMeting,
                      NistSubcategorie, nu)
 from .nist_data import VOLWASSENHEID
 
@@ -52,7 +55,8 @@ def _categorie(code: str) -> NistCategorie:
 def overzicht():
     ov = nist.overzicht()
     metingen = NistMeting.query.order_by(NistMeting.datum).all()
-    return render_template("nist/overzicht.html", ov=ov, metingen=metingen, publiek=nist_publiek(),
+    bewijs = nist.bewijs_statistiek() if current_user.is_authenticated else None
+    return render_template("nist/overzicht.html", ov=ov, metingen=metingen, publiek=nist_publiek(), bewijs=bewijs,
                            radar=nist.radar_grafiek(ov), trend=nist.trend_grafiek(ov, metingen))
 
 
@@ -231,7 +235,8 @@ def rapport():
     open_acties.sort(key=lambda a: (not a.te_laat, NistActie.PRIORITEITEN.index(a.prioriteit),
                                     a.deadline or date.max))
     metingen = NistMeting.query.order_by(NistMeting.datum).all()
-    return render_template("nist/rapport.html", ov=ov, open_acties=open_acties, metingen=metingen,
+    bewijs = nist.bewijs_statistiek() if current_user.is_authenticated else None
+    return render_template("nist/rapport.html", ov=ov, open_acties=open_acties, metingen=metingen, bewijs=bewijs,
                            vandaag=date.today(), radar=nist.radar_grafiek(ov),
                            trend=nist.trend_grafiek(ov, metingen))
 
@@ -239,7 +244,7 @@ def rapport():
 @bp.route("/export.xlsx")
 @lezen
 def export():
-    data = nist.exporteer_excel()
+    data = nist.exporteer_excel(met_bewijs=current_user.is_authenticated)
     naam = f"nist-csf-rapportage-{date.today().isoformat()}.xlsx"
     return Response(data, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     headers={"Content-Disposition": f'attachment; filename="{naam}"'})
@@ -302,3 +307,136 @@ def zichtbaarheid():
     db.session.commit()
     flash("Zichtbaarheid van de NIST-pagina's aangepast.", "ok")
     return redirect(url_for("nist.overzicht"))
+
+
+# ---------------------------------------------------------------- bewijsstukken
+# Alleen voor beheerders: bewijs kan gevoelige details bevatten, ook als de
+# NIST-pagina's openbaar zijn.
+
+BEWIJS_EXTENSIES = {
+    ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".odt", ".ods", ".odp",
+    ".txt", ".csv", ".md", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".msg", ".eml", ".zip",
+}
+# Deze types mogen in de browser worden geopend; al het andere wordt gedownload.
+INLINE_TYPES = {"application/pdf", "image/png", "image/jpeg", "image/gif", "image/webp", "text/plain"}
+
+
+def _sub_of_404(code: str) -> NistSubcategorie:
+    s = NistSubcategorie.query.filter_by(code=(code or "").upper()).first()
+    return s or abort(404)
+
+
+@bp.route("/bewijs")
+@login_required
+def bewijs_overzicht():
+    filter_ = request.args.get("filter", "")
+    nist_volgorde = (NistCategorie.volgorde, NistSubcategorie.code)
+    lijst = (NistBewijs.query.join(NistSubcategorie).join(NistCategorie)
+             .order_by(*nist_volgorde, NistBewijs.created_at).all())
+    if filter_ == "verlopen":
+        lijst = [b for b in lijst if b.verlopen]
+    zonder = (NistSubcategorie.query.join(NistCategorie)
+              .filter(~NistSubcategorie.bewijzen.any(), NistSubcategorie.nvt.is_(False))
+              .order_by(*nist_volgorde).all())
+    return render_template("nist/bewijs_overzicht.html", bewijzen=lijst, zonder=zonder, filter=filter_)
+
+
+@bp.route("/bewijs/nieuw", methods=["GET", "POST"])
+@login_required
+def bewijs_nieuw():
+    s = _sub_of_404(request.args.get("sub"))
+    b = NistBewijs(subcategorie_id=s.id)
+    if request.method == "POST":
+        if _vul_bewijs(b, nieuw=True):
+            b.toegevoegd_door = current_user.username
+            db.session.add(b)
+            db.session.commit()
+            flash("Bewijsstuk toegevoegd.", "ok")
+            return redirect(url_for("nist.categorie", code=s.categorie.code) + f"#{s.code}")
+    return render_template("nist/bewijs_form.html", b=b, s=s)
+
+
+@bp.route("/bewijs/<int:bewijs_id>/bewerken", methods=["GET", "POST"])
+@login_required
+def bewijs_bewerken(bewijs_id):
+    b = db.get_or_404(NistBewijs, bewijs_id)
+    s = b.subcategorie
+    if request.method == "POST" and _vul_bewijs(b, nieuw=False):
+        db.session.commit()
+        flash("Bewijsstuk bijgewerkt.", "ok")
+        return redirect(url_for("nist.categorie", code=s.categorie.code) + f"#{s.code}")
+    return render_template("nist/bewijs_form.html", b=b, s=s)
+
+
+@bp.route("/bewijs/<int:bewijs_id>/bestand")
+@login_required
+def bewijs_bestand(bewijs_id):
+    b = db.get_or_404(NistBewijs, bewijs_id)
+    if not b.is_bestand:
+        abort(404)
+    soort = b.mimetype or "application/octet-stream"
+    wijze = "inline" if soort in INLINE_TYPES and not request.args.get("download") else "attachment"
+    veilig = b.bestandsnaam.encode("ascii", "ignore").decode().replace('"', "") or "bestand"
+    headers = {
+        "Content-Disposition": f"{wijze}; filename=\"{veilig}\"; filename*=UTF-8''{quote(b.bestandsnaam)}",
+        "X-Content-Type-Options": "nosniff",
+        "Cache-Control": "private, no-store",
+    }
+    if soort != "application/pdf":
+        headers["Content-Security-Policy"] = "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox"
+    return Response(b.inhoud, mimetype=soort, headers=headers)
+
+
+@bp.route("/bewijs/<int:bewijs_id>/verwijderen", methods=["POST"])
+@login_required
+def bewijs_verwijderen(bewijs_id):
+    b = db.get_or_404(NistBewijs, bewijs_id)
+    s = b.subcategorie
+    db.session.delete(b)
+    db.session.commit()
+    flash("Bewijsstuk verwijderd.", "ok")
+    terug = request.form.get("terug", "")
+    if terug.startswith("/") and not terug.startswith("//"):
+        return redirect(terug)
+    return redirect(url_for("nist.categorie", code=s.categorie.code) + f"#{s.code}")
+
+
+def _vul_bewijs(b: NistBewijs, nieuw: bool) -> bool:
+    b.titel = request.form.get("titel", "").strip()
+    b.omschrijving = request.form.get("omschrijving", "").strip()
+    b.geldig_tot = nist.parse_datum(request.form.get("geldig_tot"))
+
+    bestand = request.files.get("bestand")
+    url = request.form.get("url", "").strip()
+
+    if bestand and bestand.filename:
+        naam = os.path.basename(bestand.filename.replace("\\", "/"))
+        ext = os.path.splitext(naam)[1].lower()
+        if ext not in BEWIJS_EXTENSIES:
+            flash("Dit bestandstype is niet toegestaan. Toegestaan: " + ", ".join(sorted(BEWIJS_EXTENSIES)), "fout")
+            return False
+        inhoud = bestand.read()
+        if not inhoud:
+            flash("Het bestand is leeg.", "fout")
+            return False
+        b.bestandsnaam, b.inhoud, b.grootte = naam[:255], inhoud, len(inhoud)
+        b.mimetype = mimetypes.guess_type(naam)[0] or "application/octet-stream"
+        b.url = None
+        b.titel = b.titel or os.path.splitext(naam)[0]
+    elif url:
+        if urlparse(url).scheme not in ("http", "https") or not urlparse(url).netloc:
+            flash("Een link moet beginnen met http:// of https://", "fout")
+            return False
+        b.url = url[:1000]
+        if b.bestandsnaam:  # was eerst een bestand, nu een link
+            b.bestandsnaam = b.mimetype = b.grootte = b.inhoud = None
+        b.titel = b.titel or urlparse(url).netloc
+    elif nieuw or not (b.bestandsnaam or b.url):
+        flash("Upload een bestand of vul een link in.", "fout")
+        return False
+
+    if not b.titel:
+        flash("Geef het bewijsstuk een titel.", "fout")
+        return False
+    b.titel = b.titel[:200]
+    return True

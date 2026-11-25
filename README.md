@@ -55,12 +55,15 @@ Een voorbeeld staat in `voorbeelden/maatregelen.csv`.
 1. Ga naar **NIST CSF** in het menu (na inloggen).
 2. Klik een categorie aan (bijv. in de heatmap) en vul per subcategorie de huidige score en het doel in. Of importeer alles in één keer: **Importeren → Download sjabloon**, vul het in Excel in en upload het weer.
 3. Schrijf per functie/categorie een toelichting voor lezers, en voeg verbeteracties toe (ook per subcategorie via **+ actie**).
-4. Leg periodiek (bijv. per kwartaal) een **momentopname** vast; het overzicht en rapport tonen dan de ontwikkeling.
-5. **Rapport** geeft een managementrapport (afdrukken of opslaan als PDF), **Excel-export** levert alle scores en acties in vier tabbladen.
+4. Voeg per subcategorie **bewijsstukken** toe (via **+ bewijsstuk**): een bestand (PDF, Office, afbeelding, e-mail, zip; max. 16 MB) of een link naar bijv. SharePoint. Geef optioneel een datum voor herbeoordeling; daarna wordt het stuk als *verlopen* gemarkeerd. **NIST CSF → Bewijsstukken** toont alle stukken, de verlopen stukken en welke subcategorieën nog geen bewijs hebben.
+5. Leg periodiek (bijv. per kwartaal) een **momentopname** vast; het overzicht en rapport tonen dan de ontwikkeling.
+6. **Rapport** geeft een managementrapport (afdrukken of opslaan als PDF), **Excel-export** levert alle scores en acties in vier tabbladen.
 
 Volwassenheidsschaal: 0 Niet aanwezig · 1 Initieel · 2 Herhaalbaar · 3 Gedefinieerd · 4 Beheerst · 5 Geoptimaliseerd. Subcategorieën kunnen op *n.v.t.* worden gezet en tellen dan niet mee.
 
-Standaard zijn de NIST-pagina's alleen zichtbaar voor ingelogde beheerders. Onderaan het NIST-overzicht kun je ze openbaar maken voor bezoekers (alleen lezen).
+Standaard zijn de NIST-pagina's alleen zichtbaar voor ingelogde beheerders. Onderaan het NIST-overzicht kun je ze openbaar maken voor bezoekers (alleen lezen). **Bewijsstukken blijven altijd alleen voor beheerders zichtbaar**, ook als de NIST-pagina's openbaar zijn.
+
+Bewijsbestanden worden in de database opgeslagen (SQLite of PostgreSQL), zodat een back-up van de database ook alle bewijsstukken bevat. Om veiligheidsredenen worden HTML-, SVG-, script- en programmabestanden geweigerd.
 
 Voorbeeldbestanden: `voorbeelden/nist_beoordeling.csv` en `voorbeelden/nist_acties.csv`.
 

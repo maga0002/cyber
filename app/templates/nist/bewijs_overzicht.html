@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% from "nist/_macros.html" import bewijslink with context %}
+{% block title %}Bewijsstukken · NIST CSF{% endblock %}
+{% block content %}
+<a class="terug" href="{{ url_for('nist.overzicht') }}">← NIST-overzicht</a>
+<section class="hero">
+  <div><h1>Bewijsstukken</h1><p class="sub">Onderbouwing van de NIST-beoordeling, bijvoorbeeld voor audits. Alleen zichtbaar voor beheerders.</p></div>
+</section>
+
+<div class="chips">
+  <a class="chip {{ 'actief' if not filter }}" href="{{ url_for('nist.bewijs_overzicht') }}">Alle bewijsstukken</a>
+  <a class="chip {{ 'actief' if filter == 'verlopen' }}" href="{{ url_for('nist.bewijs_overzicht', filter='verlopen') }}">Verlopen</a>
+</div>
+
+<div class="kaart">
+  <div class="tabel-scroll">
+  <table class="tabel">
+    <thead><tr><th>NIST</th><th>Bewijsstuk</th><th>Geldig tot</th><th>Toegevoegd</th><th></th></tr></thead>
+    <tbody>
+    {% for b in bewijzen %}
+      <tr class="{{ 'rij-te-laat' if b.verlopen }}">
+        <td><a class="code" href="{{ url_for('nist.categorie', code=b.subcategorie.categorie.code) }}#{{ b.subcategorie.code }}">{{ b.subcategorie.code }}</a></td>
+        <td class="wrap-cel">{{ bewijslink(b) }}{% if b.omschrijving %}<div class="klein">{{ b.omschrijving }}</div>{% endif %}</td>
+        <td>{{ b.geldig_tot.strftime('%d-%m-%Y') if b.geldig_tot else '–' }}{% if b.verlopen %} <span class="status st-te-laat">Verlopen</span>{% endif %}</td>
+        <td class="klein">{{ b.created_at|datum }}{% if b.toegevoegd_door %} · {{ b.toegevoegd_door }}{% endif %}</td>
+        <td><a class="klein" href="{{ url_for('nist.bewijs_bewerken', bewijs_id=b.id) }}">Bewerken</a></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="5" class="klein">Geen bewijsstukken{{ ' die verlopen zijn' if filter == 'verlopen' }}.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+
+{% if not filter %}
+<div class="kaart">
+  <h2>Nog zonder bewijs ({{ zonder|length }})</h2>
+  <p class="klein">Subcategorieën die van toepassing zijn maar nog geen bewijsstuk hebben.</p>
+  <div class="zonder-bewijs">
+    {% for s in zonder %}
+      <a class="code" href="{{ url_for('nist.bewijs_nieuw', sub=s.code) }}" title="{{ s.omschrijving }}">{{ s.code }}</a>
+    {% else %}
+      <span class="klein">Alles is onderbouwd.</span>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}
