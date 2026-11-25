@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% from "nist/_macros.html" import scorebalk, actie_status with context %}
+{% block title %}NIST CSF rapportage {{ vandaag.strftime('%d-%m-%Y') }}{% endblock %}
+{% block content %}
+<div class="geen-print acties rapport-knoppen">
+  <a class="terug" href="{{ url_for('nist.overzicht') }}">← NIST-overzicht</a>
+  <button class="knop primair" onclick="window.print()">Afdrukken / opslaan als PDF</button>
+  <a class="knop" href="{{ url_for('nist.export') }}">Excel-export</a>
+</div>
+
+<article class="rapport">
+<header class="rapport-kop">
+  <p class="klein">{{ app_naam }}</p>
+  <h1>Rapportage cyberweerbaarheid — NIST CSF 2.0</h1>
+  <p class="sub">Peildatum {{ vandaag.strftime('%d-%m-%Y') }}</p>
+</header>
+
+{% set t = ov.totaal %}
+<section>
+  <h2>1. Samenvatting</h2>
+  <div class="kpis">
+    <div class="kpi"><span class="kpi-waarde">{{ t.huidig if t.huidig is not none else '–' }}<span class="kpi-van"> / {{ t.doel }}</span></span><span class="kpi-label">Volwassenheid (huidig / doel)</span></div>
+    <div class="kpi"><span class="kpi-waarde">{{ t.voortgang }}%</span><span class="kpi-label">Beoordeeld ({{ t.beoordeeld }}/{{ t.totaal }})</span></div>
+    <div class="kpi"><span class="kpi-waarde">{{ ov.acties.open }}</span><span class="kpi-label">Open acties</span></div>
+    <div class="kpi {{ 'kpi-alarm' if ov.acties.te_laat }}"><span class="kpi-waarde">{{ ov.acties.te_laat }}</span><span class="kpi-label">Over deadline</span></div>
+  </div>
+  {% set beoordeelde = [] %}
+  {% for f in ov.functies if ov.per_functie[f.code].huidig is not none %}{% set _ = beoordeelde.append((ov.per_functie[f.code].huidig, f.naam)) %}{% endfor %}
+  {% if beoordeelde %}
+    {% set sterk = beoordeelde|max(attribute=0) %}{% set zwak = beoordeelde|min(attribute=0) %}
+    <p>De gemiddelde volwassenheid over de beoordeelde subcategorieën is <strong>{{ t.huidig }}</strong> op een schaal van 0 tot 5, tegen een gemiddeld doel van <strong>{{ t.doel }}</strong>.
+      De sterkste functie is <strong>{{ sterk[1] }}</strong> ({{ sterk[0] }}), de meeste aandacht vraagt <strong>{{ zwak[1] }}</strong> ({{ zwak[0] }}).
+      Er staan {{ ov.acties.open }} verbeteracties open{% if ov.acties.te_laat %}, waarvan <strong>{{ ov.acties.te_laat }} over de deadline</strong>{% endif %}.</p>
+  {% else %}
+    <p>Er zijn nog geen subcategorieën beoordeeld.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>2. Score per functie</h2>
+  <div class="rapport-functies">
+    <div class="grafiek-radar geen-breuk"><canvas data-nist='{{ radar|tojson|forceescape }}'></canvas></div>
+    <table class="tabel">
+      <thead><tr><th>Functie</th><th>Score</th><th class="getal">Gat</th><th class="getal">Beoordeeld</th><th class="getal">Open acties</th></tr></thead>
+      <tbody>
+      {% for f in ov.functies %}{% set s = ov.per_functie[f.code] %}
+        <tr><td><span class="fcode f-{{ f.code|lower }}">{{ f.code }}</span> {{ f.naam }}</td>
+            <td>{{ scorebalk(s) }}</td>
+            <td class="getal">{{ s.gat if s.gat is not none else '–' }}</td>
+            <td class="getal">{{ s.beoordeeld }}/{{ s.totaal }}</td>
+            <td class="getal">{{ ov.acties.per_code.get(f.code, 0) }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+{% if metingen|length > 1 %}
+<section class="geen-breuk">
+  <h2>Ontwikkeling</h2>
+  <div class="grafiek-klein"><canvas data-nist='{{ trend|tojson|forceescape }}'></canvas></div>
+</section>
+{% endif %}
+
+<section>
+  <h2>3. Per functie en categorie</h2>
+  {% for f in ov.functies %}
+    <div class="rapport-functie geen-breuk">
+      <h3><span class="fcode f-{{ f.code|lower }}">{{ f.code }}</span> {{ f.naam }} <span class="en">{{ f.naam_en }}</span></h3>
+      <p class="klein">{{ f.omschrijving }}</p>
+      {% if f.toelichting %}<div class="tekst toelichting">{{ f.toelichting|alinea }}</div>{% endif %}
+      <table class="tabel compact vast">
+        <colgroup><col style="width:5.5rem"><col><col style="width:230px"><col style="width:6.5rem"></colgroup>
+        <thead><tr><th>Code</th><th>Categorie</th><th>Score</th><th class="getal">Open acties</th></tr></thead>
+        <tbody>
+        {% for c in f.categorieen %}{% set s = ov.per_categorie[c.code] %}
+          <tr><td class="code">{{ c.code }}</td>
+              <td class="wrap-cel">{{ c.naam }}{% if c.toelichting %}<div class="klein">{{ c.toelichting|truncate(220) }}</div>{% endif %}</td>
+              <td>{{ scorebalk(s) }}</td>
+              <td class="getal">{{ ov.acties.per_code.get(c.code, 0) }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endfor %}
+</section>
+
+<section class="geen-breuk">
+  <h2>4. Grootste gaten (huidig t.o.v. doel)</h2>
+  {% if ov.grootste_gaten %}
+  <table class="tabel compact">
+    <thead><tr><th>Code</th><th>Omschrijving</th><th class="getal">Huidig</th><th class="getal">Doel</th><th>Toelichting</th></tr></thead>
+    <tbody>{% for s in ov.grootste_gaten %}
+      <tr><td class="code">{{ s.code }}</td><td class="wrap-cel">{{ s.omschrijving }}</td>
+          <td class="getal">{{ s.huidig }}</td><td class="getal">{{ s.doel }}</td>
+          <td class="wrap-cel klein">{{ s.toelichting or '' }}</td></tr>
+    {% endfor %}</tbody>
+  </table>
+  {% else %}<p class="klein">Geen subcategorieën onder het doel.</p>{% endif %}
+</section>
+
+<section>
+  <h2>5. Openstaande acties</h2>
+  {% if open_acties %}
+  <table class="tabel compact">
+    <thead><tr><th>NIST</th><th>Actie</th><th>Eigenaar</th><th>Prio</th><th>Deadline</th><th>Status</th></tr></thead>
+    <tbody>{% for a in open_acties %}
+      <tr class="{{ 'rij-te-laat' if a.te_laat }}"><td class="code">{{ a.subcategorie.code if a.subcategorie else a.categorie.code }}</td>
+          <td class="wrap-cel">{{ a.titel }}</td><td>{{ a.eigenaar or '–' }}</td>
+          <td><span class="prio prio-{{ a.prioriteit|lower }}">{{ a.prioriteit }}</span></td>
+          <td>{{ a.deadline.strftime('%d-%m-%Y') if a.deadline else '–' }}</td>
+          <td>{{ actie_status(a) }}</td></tr>
+    {% endfor %}</tbody>
+  </table>
+  {% else %}<p class="klein">Geen openstaande acties.</p>{% endif %}
+</section>
+
+<footer class="klein rapport-voet">Schaal: {% for n, naam, _ in niveaus %}{{ n }} = {{ naam }}{{ ', ' if not loop.last }}{% endfor %}. Bron: NIST Cybersecurity Framework 2.0.</footer>
+</article>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='chart.umd.js') }}"></script>
+<script src="{{ url_for('static', filename='nist.js') }}"></script>
+{% endblock %}

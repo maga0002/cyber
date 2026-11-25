@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% from "nist/_macros.html" import scorebalk, actietabel with context %}
+{% block title %}{{ f.code }} {{ f.naam }} · NIST CSF{% endblock %}
+{% block content %}
+<a class="terug" href="{{ url_for('nist.overzicht') }}">← NIST-overzicht</a>
+{% set s = ov.per_functie[f.code] %}
+<section class="hero">
+  <div>
+    <h1><span class="fcode f-{{ f.code|lower }}">{{ f.code }}</span> {{ f.naam }} <span class="en">{{ f.naam_en }}</span></h1>
+    <p class="sub">{{ f.omschrijving }}</p>
+  </div>
+  <div class="hero-score">{{ scorebalk(s, groot=true) }}<span class="klein">{{ s.beoordeeld }}/{{ s.totaal }} beoordeeld</span></div>
+</section>
+
+<div class="kaart info">
+  <h2>Wat doen wij hieraan?</h2>
+  {% if f.toelichting %}<div class="tekst">{{ f.toelichting|alinea }}</div>
+  {% else %}<p class="klein">Nog geen toelichting.{% if current_user.is_authenticated %} Beschrijf hier voor lezers wat deze stap voor de organisatie betekent en wat er al is gedaan.{% endif %}</p>{% endif %}
+  {% if current_user.is_authenticated %}
+    <details class="bewerk">
+      <summary>Toelichting bewerken</summary>
+      <form method="post" action="{{ url_for('nist.functie_toelichting', code=f.code) }}" class="formulier">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <textarea name="toelichting" rows="6">{{ f.toelichting or '' }}</textarea>
+        <div><button class="knop primair" type="submit">Opslaan</button></div>
+      </form>
+    </details>
+  {% endif %}
+</div>
+
+<div class="nist-boven">
+  <div class="kaart">
+    <h2>Categorieën</h2>
+    {% for c in f.categorieen %}
+      {% set cs = ov.per_categorie[c.code] %}
+      <a class="functierij" href="{{ url_for('nist.categorie', code=c.code) }}">
+        <span class="code">{{ c.code }}</span>
+        <span class="fnaam"><strong>{{ c.naam }}</strong><span class="klein">{{ c.naam_en }} · {{ cs.beoordeeld }}/{{ cs.totaal }} beoordeeld{% if ov.acties.per_code.get(c.code) %} · {{ ov.acties.per_code[c.code] }} open acties{% endif %}</span></span>
+        {{ scorebalk(cs) }}
+      </a>
+    {% endfor %}
+  </div>
+  <div class="kaart">
+    <h2>Huidig vs. doel</h2>
+    <div class="grafiek-klein"><canvas data-nist='{{ grafiek|tojson|forceescape }}'></canvas></div>
+  </div>
+</div>
+
+<div class="kaart">
+  <div class="tabelkop"><h2>Acties binnen {{ f.naam }}</h2></div>
+  {{ actietabel(acties) }}
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='chart.umd.js') }}"></script>
+<script src="{{ url_for('static', filename='nist.js') }}"></script>
+{% endblock %}

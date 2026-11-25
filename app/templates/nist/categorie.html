@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% from "nist/_macros.html" import scorebalk, actietabel, niveau_label with context %}
+{% block title %}{{ c.code }} {{ c.naam }} · NIST CSF{% endblock %}
+{% block content %}
+<a class="terug" href="{{ url_for('nist.functie', code=c.functie.code) }}">← {{ c.functie.code }} {{ c.functie.naam }}</a>
+<section class="hero">
+  <div>
+    <h1><span class="code groot">{{ c.code }}</span> {{ c.naam }} <span class="en">{{ c.naam_en }}</span></h1>
+    <p class="sub">{{ c.omschrijving }}</p>
+  </div>
+  <div class="hero-score">{{ scorebalk(score, groot=true) }}<span class="klein">{{ score.beoordeeld }}/{{ score.totaal }} beoordeeld</span></div>
+</section>
+
+<div class="kaart info">
+  <h2>Wat doen wij hieraan?</h2>
+  {% if c.toelichting %}<div class="tekst">{{ c.toelichting|alinea }}</div>
+  {% else %}<p class="klein">Nog geen toelichting.</p>{% endif %}
+  {% if current_user.is_authenticated %}
+    <details class="bewerk">
+      <summary>Toelichting bewerken</summary>
+      <form method="post" action="{{ url_for('nist.categorie_toelichting', code=c.code) }}" class="formulier">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <textarea name="toelichting" rows="6" placeholder="Bijv. welke maatregelen er zijn, wie verantwoordelijk is, wat medewerkers moeten weten…">{{ c.toelichting or '' }}</textarea>
+        <div><button class="knop primair" type="submit">Opslaan</button></div>
+      </form>
+    </details>
+  {% endif %}
+</div>
+
+<div class="kaart">
+  <div class="tabelkop">
+    <h2>Beoordeling subcategorieën</h2>
+    <details class="schaaluitleg"><summary class="klein">Uitleg volwassenheidsschaal</summary>
+      <ul class="klein">{% for n, naam, oms in niveaus %}<li><strong>{{ n }} {{ naam }}</strong> – {{ oms }}</li>{% endfor %}</ul>
+    </details>
+  </div>
+
+  {% if current_user.is_authenticated %}<form method="post" action="{{ url_for('nist.beoordeling', code=c.code) }}">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">{% endif %}
+  <div class="subcats">
+  {% for s in c.subcategorieen %}
+    <div class="subcat {{ 'is-nvt' if s.nvt }}" id="{{ s.code }}">
+      <div class="subcat-kop">
+        <span class="code">{{ s.code }}</span>
+        <p>{{ s.omschrijving }}</p>
+      </div>
+      {% if current_user.is_authenticated %}
+        <div class="subcat-velden">
+          <label>Huidig
+            <select name="huidig_{{ s.id }}">
+              <option value="">– niet beoordeeld –</option>
+              {% for n, naam, _ in niveaus %}<option value="{{ n }}" {{ 'selected' if s.huidig == n }}>{{ n }} · {{ naam }}</option>{% endfor %}
+            </select>
+          </label>
+          <label>Doel
+            <select name="doel_{{ s.id }}">
+              <option value="">–</option>
+              {% for n, naam, _ in niveaus %}<option value="{{ n }}" {{ 'selected' if s.doel == n }}>{{ n }} · {{ naam }}</option>{% endfor %}
+            </select>
+          </label>
+          <label>Eigenaar <input name="eigenaar_{{ s.id }}" value="{{ s.eigenaar or '' }}" maxlength="120"></label>
+          <label class="vinkje"><input type="checkbox" name="nvt_{{ s.id }}" {{ 'checked' if s.nvt }}> n.v.t.</label>
+          <label class="breed">Toelichting / onderbouwing
+            <textarea name="toelichting_{{ s.id }}" rows="2">{{ s.toelichting or '' }}</textarea>
+          </label>
+        </div>
+      {% else %}
+        <div class="subcat-lezen">
+          {% if s.nvt %}<span class="status">Niet van toepassing</span>
+          {% else %}
+            <span>Huidig: <strong>{{ niveau_label(s.huidig) }}</strong></span>
+            <span>Doel: <strong>{{ niveau_label(s.doel) }}</strong></span>
+            {% if s.eigenaar %}<span>Eigenaar: {{ s.eigenaar }}</span>{% endif %}
+          {% endif %}
+          {% if s.toelichting %}<div class="tekst klein-tekst">{{ s.toelichting|alinea }}</div>{% endif %}
+        </div>
+      {% endif %}
+      <div class="subcat-voet">
+        {% set n_open = s.acties|rejectattr('afgerond')|list|length %}
+        <span class="klein">{% if s.beoordeeld_op %}Bijgewerkt {{ s.beoordeeld_op|datum }}{% endif %}{% if n_open %} · {{ n_open }} open actie(s){% endif %}</span>
+        {% if current_user.is_authenticated %}<a class="klein" href="{{ url_for('nist.actie_nieuw', sub=s.code) }}">+ actie</a>{% endif %}
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+  {% if current_user.is_authenticated %}
+    <div class="acties plakkend"><button class="knop primair" type="submit">Beoordeling opslaan</button></div>
+  </form>{% endif %}
+</div>
+
+<div class="kaart">
+  <div class="tabelkop">
+    <h2>Acties</h2>
+    {% if current_user.is_authenticated %}<a class="knop" href="{{ url_for('nist.actie_nieuw', categorie=c.code) }}">+ Actie toevoegen</a>{% endif %}
+  </div>
+  {{ actietabel(c.acties) }}
+</div>
+{% endblock %}

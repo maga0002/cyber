@@ -5,6 +5,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 from .database import db
 from .importer import ImportFout, analyseer, kies_standaard_groepkolom, lees_bestand
 from .models import Dataset, DatasetRow, NewsPost, User
+from .nist_routes import nist_publiek
 
 bp = Blueprint("main", __name__)
 
@@ -83,7 +84,11 @@ def index():
         q = q.filter_by(category=categorie)
     berichten = q.order_by(NewsPost.pinned.desc(), NewsPost.created_at.desc()).all()
     datasets = Dataset.query.order_by(Dataset.updated_at.desc()).limit(6).all()
-    return render_template("index.html", berichten=berichten, datasets=datasets,
+    nist_ov = None
+    if current_user.is_authenticated or nist_publiek():
+        from . import nist
+        nist_ov = nist.overzicht()
+    return render_template("index.html", berichten=berichten, datasets=datasets, nist_ov=nist_ov,
                            categorieen=NewsPost.CATEGORIEEN, actieve_categorie=categorie)
 
 

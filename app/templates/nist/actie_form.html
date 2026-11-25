@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ 'Actie bewerken' if actie.id else 'Nieuwe actie' }}</h1>
+<form method="post" class="kaart formulier">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label>Gekoppeld aan
+    {% set huidig = koppeling %}
+    <select name="koppeling" required>
+      <option value="">– kies categorie of subcategorie –</option>
+      {% for c in categorieen %}
+        <optgroup label="{{ c.code }} {{ c.naam }}">
+          <option value="{{ c.code }}" {{ 'selected' if huidig == c.code }}>{{ c.code }} – hele categorie</option>
+          {% for s in c.subcategorieen %}
+            <option value="{{ s.code }}" {{ 'selected' if huidig == s.code }}>{{ s.code }} – {{ s.omschrijving|truncate(80) }}</option>
+          {% endfor %}
+        </optgroup>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Titel <input name="titel" value="{{ actie.titel or '' }}" required maxlength="200"></label>
+  <label>Omschrijving <textarea name="omschrijving" rows="4">{{ actie.omschrijving or '' }}</textarea></label>
+  <div class="veldenrij">
+    <label>Eigenaar <input name="eigenaar" value="{{ actie.eigenaar or '' }}" maxlength="120"></label>
+    <label>Deadline <input type="date" name="deadline" value="{{ actie.deadline.isoformat() if actie.deadline else '' }}"></label>
+  </div>
+  <div class="veldenrij">
+    <label>Prioriteit
+      <select name="prioriteit">{% for p in prioriteiten %}<option {{ 'selected' if actie.prioriteit == p }}>{{ p }}</option>{% endfor %}</select>
+    </label>
+    <label>Status
+      <select name="status">{% for s in statussen %}<option {{ 'selected' if actie.status == s }}>{{ s }}</option>{% endfor %}</select>
+    </label>
+  </div>
+  <div class="acties">
+    <button class="knop primair" type="submit">Opslaan</button>
+    <a class="knop" href="{{ url_for('nist.categorie', code=koppeling.split('-')[0]) if koppeling else url_for('nist.acties') }}">Annuleren</a>
+  </div>
+</form>
+{% if actie.id %}
+<form method="post" action="{{ url_for('nist.actie_verwijderen', actie_id=actie.id) }}" onsubmit="return confirm('Actie verwijderen?')">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <button class="knop gevaar" type="submit">Actie verwijderen</button>
+</form>
+{% endif %}
+{% endblock %}

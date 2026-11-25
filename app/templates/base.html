@@ -16,6 +16,7 @@
     </a>
     <nav class="nav">
       <a href="{{ url_for('main.index') }}" class="{{ 'actief' if request.endpoint in ('main.index','main.nieuws_detail') }}">Nieuws</a>
+      {% if nist_zichtbaar %}<a href="{{ url_for('nist.overzicht') }}" class="{{ 'actief' if request.blueprint == 'nist' }}">NIST CSF</a>{% endif %}
       <a href="{{ url_for('main.dashboards') }}" class="{{ 'actief' if request.endpoint and 'dashboard' in request.endpoint }}">Dashboards</a>
       {% if current_user.is_authenticated %}
         <form method="post" action="{{ url_for('main.logout') }}" class="inline">

@@ -4,6 +4,7 @@ Webapplicatie om de cyberweerbaarheid van de organisatie te monitoren en te comm
 
 - **Startpagina met nieuws** – plaats berichten (Algemeen, Waarschuwing, Incident, Tip, Update), zet ze bovenaan vast of bewaar ze als concept.
 - **Dashboards uit lijsten** – importeer een CSV- of Excel-bestand; de app maakt er automatisch grafieken, kerncijfers en een doorzoekbare tabel van. Klik op een grafiekdeel om te filteren. Bijwerken met een nieuw bestand houdt dezelfde link.
+- **NIST Cybersecurity Framework 2.0** – alle 6 functies, 22 categorieën en 106 subcategorieën zijn ingebouwd. Per subcategorie leg je een volwassenheidsscore (0–5, huidig en doel), eigenaar en onderbouwing vast; per functie en categorie schrijf je een toelichting voor lezers ("Wat doen wij hieraan?"), en je koppelt verbeteracties met eigenaar, prioriteit en deadline. Rapportage via een overzicht (radar, heatmap, grootste gaten, trend), een afdrukbaar managementrapport (opslaan als PDF) en een Excel-export.
 - **Database** – gebruikt PostgreSQL als `DATABASE_URL` is ingesteld én bereikbaar is; anders automatisch SQLite (`instance/cyber.db`). De gebruikte database staat (voor beheerders) onderaan de pagina.
 
 Bezoekers kunnen alles lezen; alleen ingelogde beheerders kunnen plaatsen, importeren, bewerken en verwijderen.
@@ -48,6 +49,22 @@ Bij het opstarten test de app de verbinding (3 seconden time-out). Lukt dat niet
 - Statuswaarden zoals *Gereed/Voldoet/Groen/Laag*, *Deels/In uitvoering/Gepland/Middel* en *Open/Niet/Rood/Hoog* krijgen automatisch stoplichtkleuren.
 
 Een voorbeeld staat in `voorbeelden/maatregelen.csv`.
+
+## NIST CSF gebruiken
+
+1. Ga naar **NIST CSF** in het menu (na inloggen).
+2. Klik een categorie aan (bijv. in de heatmap) en vul per subcategorie de huidige score en het doel in. Of importeer alles in één keer: **Importeren → Download sjabloon**, vul het in Excel in en upload het weer.
+3. Schrijf per functie/categorie een toelichting voor lezers, en voeg verbeteracties toe (ook per subcategorie via **+ actie**).
+4. Leg periodiek (bijv. per kwartaal) een **momentopname** vast; het overzicht en rapport tonen dan de ontwikkeling.
+5. **Rapport** geeft een managementrapport (afdrukken of opslaan als PDF), **Excel-export** levert alle scores en acties in vier tabbladen.
+
+Volwassenheidsschaal: 0 Niet aanwezig · 1 Initieel · 2 Herhaalbaar · 3 Gedefinieerd · 4 Beheerst · 5 Geoptimaliseerd. Subcategorieën kunnen op *n.v.t.* worden gezet en tellen dan niet mee.
+
+Standaard zijn de NIST-pagina's alleen zichtbaar voor ingelogde beheerders. Onderaan het NIST-overzicht kun je ze openbaar maken voor bezoekers (alleen lezen).
+
+Voorbeeldbestanden: `voorbeelden/nist_beoordeling.csv` en `voorbeelden/nist_acties.csv`.
+
+De Nederlandse omschrijvingen zijn samenvattingen van de officiële NIST-teksten; zie https://www.nist.gov/cyberframework voor de bron.
 
 ## Beheer via de commandoregel
 

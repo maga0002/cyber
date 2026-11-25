@@ -1,0 +1,52 @@
+{% macro scorebalk(s, groot=false) -%}
+  {# s = resultaat van nist.bereken(); toont huidig (balk) en doel (markering) op schaal 0-5 #}
+  <div class="scorebalk {{ 'groot' if groot }}" title="Huidig {{ s.huidig if s.huidig is not none else '–' }} · doel {{ s.doel if s.doel is not none else '–' }}">
+    <div class="sb-baan">
+      {% if s.huidig is not none %}<div class="sb-vulling k-{{ s.kleur }}" style="width: {{ (s.huidig / 5 * 100)|round(1) }}%"></div>{% endif %}
+      {% if s.doel is not none %}<div class="sb-doel" style="left: {{ (s.doel / 5 * 100)|round(1) }}%"></div>{% endif %}
+    </div>
+    <span class="sb-getal">{{ s.huidig if s.huidig is not none else '–' }}<span class="klein"> / {{ s.doel if s.doel is not none else '–' }}</span></span>
+  </div>
+{%- endmacro %}
+
+{% macro niveau_label(n) -%}
+  {%- if n is none %}–{% else %}{{ n }} · {{ niveaus[n][1] }}{% endif -%}
+{%- endmacro %}
+
+{% macro actie_status(a) -%}
+  <span class="status st-{{ a.status|lower|replace(' ', '-') }}">{{ a.status }}</span>
+  {% if a.te_laat %}<span class="status st-te-laat">Te laat</span>{% endif %}
+{%- endmacro %}
+
+{% macro actietabel(acties, toon_code=true) -%}
+  <div class="tabel-scroll">
+  <table class="tabel acties">
+    <thead><tr>{% if toon_code %}<th>NIST</th>{% endif %}<th>Actie</th><th>Eigenaar</th><th>Prioriteit</th><th>Deadline</th><th>Status</th>{% if current_user.is_authenticated %}<th></th>{% endif %}</tr></thead>
+    <tbody>
+    {% for a in acties %}
+      <tr class="{{ 'rij-te-laat' if a.te_laat }} {{ 'rij-afgerond' if a.afgerond }}">
+        {% if toon_code %}<td><a href="{{ url_for('nist.categorie', code=a.categorie.code) }}" class="code">{{ a.subcategorie.code if a.subcategorie else a.categorie.code }}</a></td>{% endif %}
+        <td class="wrap-cel"><strong>{{ a.titel }}</strong>{% if a.omschrijving %}<div class="klein">{{ a.omschrijving }}</div>{% endif %}</td>
+        <td>{{ a.eigenaar or '–' }}</td>
+        <td><span class="prio prio-{{ a.prioriteit|lower }}">{{ a.prioriteit }}</span></td>
+        <td>{{ a.deadline.strftime('%d-%m-%Y') if a.deadline else '–' }}</td>
+        <td>{{ actie_status(a) }}</td>
+        {% if current_user.is_authenticated %}
+        <td class="nowrap">
+          <form method="post" action="{{ url_for('nist.actie_status', actie_id=a.id) }}" class="inline">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <select name="status" onchange="this.form.submit()" aria-label="Status wijzigen" class="mini-select">
+              {% for s in ['Open', 'In uitvoering', 'Gereed', 'Geannuleerd'] %}<option {{ 'selected' if s == a.status }}>{{ s }}</option>{% endfor %}
+            </select>
+          </form>
+          <a href="{{ url_for('nist.actie_bewerken', actie_id=a.id) }}" class="klein">Bewerken</a>
+        </td>
+        {% endif %}
+      </tr>
+    {% else %}
+      <tr><td colspan="7" class="klein">Geen acties.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+{%- endmacro %}

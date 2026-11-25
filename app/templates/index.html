@@ -40,6 +40,22 @@
   </div>
 
   <aside class="zijkolom">
+    {% if nist_ov %}
+    {% from "nist/_macros.html" import scorebalk with context %}
+    <div class="kaart">
+      <h3>NIST CSF-volwassenheid</h3>
+      {{ scorebalk(nist_ov.totaal, groot=false) }}
+      <ul class="lijst compact" style="margin-top:.75rem">
+      {% for f in nist_ov.functies %}
+        <li><a href="{{ url_for('nist.functie', code=f.code) }}" class="rij-flex" style="display:flex;gap:.5rem">
+          <span><span class="fcode f-{{ f.code|lower }}">{{ f.code }}</span> {{ f.naam }}</span>
+          <strong>{{ nist_ov.per_functie[f.code].huidig if nist_ov.per_functie[f.code].huidig is not none else '–' }}</strong></a></li>
+      {% endfor %}
+      </ul>
+      <p class="klein">{{ nist_ov.acties.open }} open acties{% if nist_ov.acties.te_laat %}, <strong>{{ nist_ov.acties.te_laat }} te laat</strong>{% endif %}</p>
+      <a class="lees" href="{{ url_for('nist.overzicht') }}">Naar NIST-overzicht →</a>
+    </div>
+    {% endif %}
     <div class="kaart">
       <h3>Dashboards</h3>
       {% if datasets %}

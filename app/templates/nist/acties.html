@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "nist/_macros.html" import actietabel with context %}
+{% block title %}Acties · NIST CSF{% endblock %}
+{% block content %}
+<a class="terug" href="{{ url_for('nist.overzicht') }}">← NIST-overzicht</a>
+<section class="hero">
+  <div><h1>Verbeteracties</h1><p class="sub">Alle acties gekoppeld aan NIST CSF-categorieën en -subcategorieën.</p></div>
+  {% if current_user.is_authenticated %}<a class="knop primair" href="{{ url_for('nist.actie_nieuw', terug=request.full_path) }}">+ Nieuwe actie</a>{% endif %}
+</section>
+
+<form method="get" class="filterbalk kaart">
+  <label>Status
+    <select name="status" onchange="this.form.submit()">
+      <option value="actief" {{ 'selected' if f_status == 'actief' }}>Open + in uitvoering</option>
+      <option value="alle" {{ 'selected' if f_status == 'alle' }}>Alle</option>
+      {% for s in statussen %}<option {{ 'selected' if f_status == s }}>{{ s }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Functie
+    <select name="functie" onchange="this.form.submit()">
+      <option value="">Alle functies</option>
+      {% for f in functies %}<option value="{{ f.code }}" {{ 'selected' if f_functie == f.code }}>{{ f.code }} {{ f.naam }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Eigenaar
+    <select name="eigenaar" onchange="this.form.submit()">
+      <option value="">Iedereen</option>
+      {% for e in eigenaren %}<option {{ 'selected' if f_eigenaar == e }}>{{ e }}</option>{% endfor %}
+    </select>
+  </label>
+  <span class="klein">{{ acties|length }} actie(s)</span>
+</form>
+
+<div class="kaart">{{ actietabel(acties) }}</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+Code;Actie;Omschrijving;Eigenaar;Status;Prioriteit;Deadline
+GV.RM-02;Risicobereidheid vaststellen in MT;Risicobereidheid en -tolerantie formuleren en laten vaststellen door het managementteam;CISO;In uitvoering;Hoog;31-01-2027
+GV.SC-04;Leveranciers classificeren op kritikaliteit;Overzicht van alle ICT-leveranciers met kritikaliteitsscore;Inkoop;Open;Middel;01-03-2027
+ID.AM-01;CMDB actualiseren;Hardware-inventaris koppelen aan endpointbeheer;IT Beheer;Gereed;Middel;01-10-2026
+ID.RA-01;Maandelijkse kwetsbaarheidsscan;Geautomatiseerde scan op alle servers en werkplekken;Security Team;In uitvoering;Hoog;15-12-2026
+PR.AA-03;MFA uitrollen voor beheeraccounts;Phishingbestendige MFA voor alle beheerders;IT Beheer;Open;Hoog;01-11-2026
+PR.AT-01;Phishingsimulatie Q1;Organisatiebrede phishingtest met vervolgtraining;HR;Open;Middel;31-03-2027
+PR.DS-11;Hersteltest back-ups;Kwartaalsgewijze hersteltest van kritieke systemen;IT Beheer;Open;Hoog;20-12-2026
+DE.CM-01;SIEM-dekking uitbreiden;Netwerklogging van firewalls en VPN naar SIEM;Security Team;In uitvoering;Hoog;28-02-2027
+RS.MA;Incidentresponsplan herzien;Rollen en escalatielijnen actualiseren en beleggen;CISO;Open;Hoog;31-12-2026
+RC.RP-03;Back-up-integriteitscontrole;Controle op integriteit vóór restore opnemen in procedure;IT Beheer;Open;Middel;31-03-2027

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<a class="terug" href="{{ url_for('nist.overzicht') }}">← NIST-overzicht</a>
+<h1>NIST-gegevens importeren</h1>
+<form method="post" enctype="multipart/form-data" class="kaart formulier">
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label>Bestand (CSV of Excel)
+    <input type="file" name="bestand" accept=".csv,.txt,.xlsx,.xls" required>
+  </label>
+  <div class="acties">
+    <button class="knop primair" type="submit">Importeren</button>
+    <a class="knop" href="{{ url_for('nist.sjabloon') }}">Download sjabloon (alle 106 subcategorieën)</a>
+  </div>
+</form>
+
+<div class="kaart uitleg">
+  <h3>Beoordelingen importeren</h3>
+  <p>Een lijst met per regel een NIST-code en scores. Bestaande scores worden overschreven, lege cellen laten de huidige waarde staan.</p>
+  <ul>
+    <li><strong>Code</strong> (verplicht) – bijv. <code>PR.AA-01</code></li>
+    <li><strong>Huidig</strong> / Score / Niveau – 0 t/m 5, of <code>n.v.t.</code></li>
+    <li><strong>Doel</strong> – 0 t/m 5</li>
+    <li><strong>Eigenaar</strong>, <strong>Toelichting</strong> – optioneel</li>
+  </ul>
+  <h3>Acties importeren</h3>
+  <p>Bevat het bestand een kolom <strong>Actie</strong>, dan wordt elke regel als verbeteractie toegevoegd.</p>
+  <ul>
+    <li><strong>Code</strong> – categorie (<code>DE.CM</code>) of subcategorie (<code>DE.CM-01</code>)</li>
+    <li><strong>Actie</strong>, Omschrijving, Eigenaar, Status (Open / In uitvoering / Gereed / Geannuleerd), Prioriteit (Hoog / Middel / Laag), Deadline (bijv. 31-12-2026)</li>
+  </ul>
+</div>
+{% endblock %}

@@ -59,8 +59,10 @@ def create_app(test_config: dict | None = None) -> Flask:
     db.init_app(app)
     login_manager.init_app(app)
 
+    from .nist_routes import bp as nist_bp
     from .routes import bp
     app.register_blueprint(bp)
+    app.register_blueprint(nist_bp)
 
     _registreer_csrf(app)
     _registreer_filters(app)
@@ -68,6 +70,8 @@ def create_app(test_config: dict | None = None) -> Flask:
 
     with app.app_context():
         db.create_all()
+        from .nist import vul_framework
+        vul_framework()
 
     app.logger.info("Database in gebruik: %s", db_type)
     return app
